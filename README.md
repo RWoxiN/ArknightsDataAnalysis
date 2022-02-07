@@ -15,6 +15,226 @@
 
 ![image-20220206222024946](https://gitee.com/fateicr/image-bed/raw/master/Image/202202062220152.png)
 
+## 配置文件
+
+首次运行 pull_to_db.py 时会在本地目录自动生成 config.json。需手动修改配置文件后方可正常运行程序。
+
+### 数据库配置
+
+
+目前仅支持 sqlite3。
+
+```json
+"database": {
+    "type": "sqlite3",
+    "sqlite3": {
+        "filename": "arknights_cards.db"
+    }
+}
+```
+可通过 database -> sqlite3 -> filename 来修改 sqlite 数据库文件名。
+
+### 账号配置
+
+```json
+"accounts": [
+    {
+        "name": "",
+        "token": ""
+    },
+    {
+        "name": "",
+        "token": ""
+    }
+]
+```
+
+name: 没有用处，多账号时供用户辨别不同 token 的归属账号。
+
+token: 前文获取到的 token。
+
+可自行增加项来添加账号，别忘了逗号 `,`。
+
+### Bark 配置
+
+Bark: https://github.com/Finb/Bark
+
+iOS 端用户可直接在 app store 下载安装 Bark。
+
+如需自行架设 Bark 服务，可参考 https://github.com/Finb/bark-server
+
+```json
+"bark": {
+    "url": "",
+    "device_key": "",
+    "title": "Arnights 寻访记录",
+    "group": "Arknights",
+    "badge": 1,
+    "isArchive": 1,
+    "body": {}
+}
+```
+
+| 参数       | 描述                                                         |
+| ---------- | ------------------------------------------------------------ |
+| url        | Bark Post 方式推送所使用的 url，使用 Bark 官方服务则为 `https://api.day.app/push`。 |
+| device_key | 设备码，可自行在 Bark 客户端查看。                           |
+| title      | 推送标题。                                                   |
+| group      | 推送消息分组。                                               |
+| badge      | 推送设置角标。                                               |
+| isArchive  | 自动保存通知消息。                                           |
+
+以上参数均可在 Bark 客户端查看详细说明。
+
+#### 不同账号自定义 Bark 配置
+
+可通过在 accounts 项中 添加 bark 项的方式自定义配置不同账号使用的不同推送方式，除 body 项（推送内容配置）外，如需配置 body 项，则需要将全局 bark 配置中的 body 项全部复制过去再进行修改。优先使用 accounts 中配置的 bark 配置，如果找不到则使用全局配置。
+
+```json
+"accounts": [
+    {
+        "name": "Hello",
+        "token": "this is a token",
+        "bark": {
+            "title": "this is a new title created by accounts"
+        }
+    },
+    {
+        "name": "World",
+        "token": "this is a token"
+    }
+]
+```
+
+以上配置中，Hello 这一项的推送标题会被改变，而 World 这一项使用全局默认配置。
+
+#### Bark 推送内容配置
+
+```json
+"body": {
+    "user_info": {
+        "enabled": 1,
+        "format_main": "当前用户：",
+        "format": "UID: {0}, NickName: {1}.",
+        "description": "显示当前用户数据。",
+        "params_description": "{0}: 用户UID. {1}: 昵称."
+    },
+    "cards_record": {
+        "enabled": 1,
+        "format_main": "抽卡详细数据：",
+        "format": "共抽卡 {0} 次，其中六星 {1} 次，五星 {2} 次。",
+        "description": "显示抽卡详细数据，即总计抽数，以及每个星级的抽数。",
+        "params_description": "{0}: 总抽数. {1}: 抽到的六星总数. {2}: 抽到的五星总数. {3}: 抽到的四星总数. {4}: 抽到的三星总数."
+    },
+    "cards_record_pool": {
+        "enabled": 1,
+        "format_main": "各卡池抽卡数据：",
+        "format": "{0}: 总抽数: {1}，其中六星 {2} 次，五星 {3} 次。",
+        "description": "获取各卡池抽卡次数，以及各卡池中每个星级的抽数",
+        "params_description": "{0}: 池子. {1}: 该池子总抽数. {2}: 该池子抽到的六星总数. {3}: 该池子抽到的五星总数. {4}: 该池子抽到的四星总数. {5}: 该池子抽到的三星总数."
+    },
+    "cards_pool_guarantee": {
+        "enabled": 1,
+        "format_main": "保底情况：",
+        "format": "{0}: 抽数: {1}, 下一抽概率: {2}%",
+        "description": "获取各卡池保底状况，即已累计多少抽未出六星",
+        "params_description": "{0}: 池子. {1}: 该池子当前保底抽数. {2}: 该池子下一抽出货概率."
+    },
+    "cards_record_six": {
+        "enabled": 1,
+        "format_main": "历史抽取六星：",
+        "format": "{0}: {1}: {2}, 抽数: {3}",
+        "format_datatime": "%Y-%m-%d %H:%M",
+        "description": "显示抽卡详细数据，即总计抽数，以及每个星级的抽数",
+        "params_description": "{0}: 该六星出货的时间. {1}: 该六星出货的池子. {2}: 该六星名称. {3}: 该六星出货时的抽数."
+    }
+}
+```
+
+| 参数               | 描述                                       |
+| ------------------ | ------------------------------------------ |
+| enabled            | 该项内容启用状态                           |
+| format_main        | 该项内容总览标题。                         |
+| format             | 该项内容格式。                             |
+| description        | 该项内容描述，仅作说明。                   |
+| params_description | 该项内容各参数描述及其对应序号，仅作说明。 |
+
+##### user_info
+
+显示当前用户数据。
+
+params:
+
+| 参数序号 | 描述    |
+| -------- | ------- |
+| 0        | 用户UID |
+| 1        | 昵称    |
+
+##### cards_record
+
+显示抽卡详细数据，即总计抽数，以及每个星级的抽数。
+
+params:
+
+| 参数序号 | 描述           |
+| -------- | -------------- |
+| 0        | 总抽数         |
+| 1        | 抽到的六星总数 |
+| 2        | 抽到的五星总数 |
+| 3        | 抽到的四星总数 |
+| 4        | 抽到的三星总数 |
+
+##### cards_record_pool
+
+获取各卡池抽卡次数，以及各卡池中每个星级的抽数
+
+params:
+
+| 参数序号 | 描述                 |
+| -------- | -------------------- |
+| 0        | 池子                 |
+| 1        | 该池子总抽数         |
+| 2        | 该池子抽到的六星总数 |
+| 3        | 该池子抽到的五星总数 |
+| 4        | 该池子抽到的四星总数 |
+| 5        | 该池子抽到的三星总数 |
+
+##### cards_pool_guarantee
+
+获取各卡池保底状况，即已累计多少抽未出六星
+
+params:
+
+| 参数序号 | 描述                 |
+| -------- | -------------------- |
+| 0        | 池子                 |
+| 1        | 该池子当前保底抽数   |
+| 2        | 该池子下一抽出货概率 |
+
+##### cards_count_avg
+
+获取各卡池平均出货抽数
+
+params:
+
+| 参数序号 | 描述               |
+| -------- | ------------------ |
+| 0        | 池子               |
+| 1        | 该池子平均出货抽数 |
+
+##### cards_record_six
+
+获取抽到的六星历史记录
+
+params:
+
+| 参数序号 | 描述               |
+| -------- | ------------------ |
+| 0        | 该六星出货的时间   |
+| 1        | 该六星出货的池子   |
+| 2        | 该六星名称         |
+| 3        | 该六星出货时的抽数 |
+
 ## 预设脚本
 
 将 arknights_cards.py, pull_to_db.py, push_to_bark.py 放入同一目录下。而后通过定时任务每隔一段时间（半个小时或其他）运行 pull_to_db.py 拉取数据到本地数据库，并通过定时任务每天一次运行 push_to_bark.py 推送当日寻访数据到手机。

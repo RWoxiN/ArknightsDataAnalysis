@@ -1,6 +1,123 @@
+# -*- coding: utf-8 -*-
+
 import requests
 import json
 import sqlite3
+import os
+import copy
+
+class arknights_config():
+
+    config = {
+        "database": {
+            "type": "sqlite3",
+            "sqlite3": {
+                "filename": "arknights_cards.db"
+            } 
+        },
+        "accounts": [
+            {
+                "name": "",
+                "token": ""
+            }
+        ],
+        "bark": {
+            "url": "",
+            "device_key": "",
+            "title": "Arnights 寻访记录",
+            "group": "Arknights",
+            "badge": 1,
+            "isArchive": 1,
+            "body": {
+                "user_info": {
+                    "enabled": 1,
+                    "format_main": "当前用户：",
+                    "format": "UID: {0}, NickName: {1}.",
+                    "description": "显示当前用户数据。",
+                    "params_description": "{0}: 用户UID. {1}: 昵称."
+                },
+                "cards_record": {
+                    "enabled": 1,
+                    "format_main": "抽卡详细数据：",
+                    "format": "共抽卡 {0} 次，其中六星 {1} 次，五星 {2} 次。",
+                    "description": "显示抽卡详细数据，即总计抽数，以及每个星级的抽数。",
+                    "params_description": "{0}: 总抽数. {1}: 抽到的六星总数. {2}: 抽到的五星总数. {3}: 抽到的四星总数. {4}: 抽到的三星总数."
+                },
+                "cards_record_pool": {
+                    "enabled": 1,
+                    "format_main": "各卡池抽卡数据：",
+                    "format": "{0}: 总抽数: {1}，其中六星 {2} 次，五星 {3} 次。",
+                    "description": "获取各卡池抽卡次数，以及各卡池中每个星级的抽数",
+                    "params_description": "{0}: 池子. {1}: 该池子总抽数. {2}: 该池子抽到的六星总数. {3}: 该池子抽到的五星总数. {4}: 该池子抽到的四星总数. {5}: 该池子抽到的三星总数."
+
+                },
+                "cards_pool_guarantee": {
+                    "enabled": 1,
+                    "format_main": "保底情况：",
+                    "format": "{0}: 抽数: {1}, 下一抽概率: {2}%",
+                    "description": "获取各卡池保底状况，即已累计多少抽未出六星",
+                    "params_description": "{0}: 池子. {1}: 该池子当前保底抽数. {2}: 该池子下一抽出货概率."
+                },
+                "cards_count_avg": {
+                    "enabled": 1,
+                    "format_main": "平均出货抽数：",
+                    "format": "{0}: 抽数: {1}",
+                    "description": "获取各卡池平均出货抽数",
+                    "params_description": "{0}: 池子. {1}: 该池子平均出货抽数."
+                },
+                "cards_record_six": {
+                    "enabled": 1,
+                    "format_main": "历史抽取六星：",
+                    "format": "{0}: {1}: {2}, 抽数: {3}",
+                    "format_datatime": "%Y-%m-%d %H:%M",
+                    "description": "获取抽到的六星历史记录",
+                    "params_description": "{0}: 该六星出货的时间. {1}: 该六星出货的池子. {2}: 该六星名称. {3}: 该六星出货时的抽数."
+                }
+            }
+        }
+    }
+
+    def __init__(self, config_file='config.json'):
+        self.config_file = config_file
+        if not os.path.exists(self.config_file):
+            self.update_config()
+            print('初始化 {} 完成，请前往完成相关配置！'.format(self.config_file))
+            exit(1)
+        else:
+            self.load_config()
+    
+    def load_config(self):
+        with open(self.config_file, encoding='utf-8') as json_file:
+            self.config = json.load(json_file)
+        return self.config
+
+    def update_config(self):
+        with open(self.config_file, 'w', encoding='utf-8') as json_file:
+            json.dump(self.config, json_file, indent=4, ensure_ascii=False)
+
+    def load_config_database(self):
+        database_config = self.config.get('database')
+        database_type = database_config.get('type')
+        type_config = database_config.get(database_type)
+        return database_type, type_config
+
+    def load_config_accounts(self):
+        self.load_config()
+        accounts_config = self.config.get('accounts')
+        bark_config = self.config.get('bark')
+        final_accounts_config = []
+        for account in accounts_config:    
+            account_bark_config = account.get('bark')
+            if account_bark_config == None:
+                account_bark_config = bark_config
+            else:
+                temp_bark_config = copy.copy(bark_config)
+                temp_bark_config.update((key, value) for key, value in account_bark_config.items())
+                account_bark_config = temp_bark_config
+            account['bark'] = account_bark_config
+            final_accounts_config.append(account)
+        return final_accounts_config
+
 
 class arknights_api():
     class request_api():
@@ -160,8 +277,11 @@ class arknights_database():
                         conn.execute(update_dt_cmd)
                         count += 1
                     else:
-                        count = int(row[2])
-                        count += 1
+                        if row[1] == 6:
+                            count = 1
+                        else:
+                            count = int(row[2])
+                            count += 1
                 else:
                     update_dt_cmd = 'UPDATE CHARS SET COUNT = {} WHERE ID = {}'.format(count, row[0])
                     conn.execute(update_dt_cmd)
@@ -231,6 +351,8 @@ class arknights_database():
         for row in cursor:
             num = row[0]
         conn.close()
+        if not num == None:
+            num = format(num, '.1f')
         return num
 
 
@@ -261,7 +383,7 @@ class arknights_cards():
     ################################
     def show(self):
         user_info_dict = self.ak_api.get_user_info()
-        print('uid: {}, nickName: {}'.format(user_info_dict['uid'], user_info_dict['nickName']))
+        # print('uid: {}, nickName: {}'.format(user_info_dict['uid'], user_info_dict['nickName']))
         return user_info_dict
 
     ################################
@@ -294,7 +416,7 @@ class arknights_cards():
             '5': self.ak_db.get_cards_record_number(self.uid, None, 5),
             '6': self.ak_db.get_cards_record_number(self.uid, None, 6),
         }
-        print('抽卡详细数据: {}'.format(numbers))
+        # print('抽卡详细数据: {}'.format(numbers))
         return numbers
 
     ################################
@@ -323,7 +445,7 @@ class arknights_cards():
                 '6': self.ak_db.get_cards_record_number(self.uid, pool, 6),
             }
             numbers[pool] = pool_numbers
-        print('各卡池抽卡数据: {}'.format(numbers))
+        # print('各卡池抽卡数据: {}'.format(numbers))
         return numbers
 
     ################################
@@ -350,7 +472,7 @@ class arknights_cards():
                 'probability_next': probability
             }
             numbers[pool] = pool_number
-        print('各卡池保底数据: {}'.format(numbers))
+        # print('各卡池保底数据: {}'.format(numbers))
         return numbers
 
     ################################
@@ -362,7 +484,7 @@ class arknights_cards():
     #           "POOL": 该六星出货的池子,
     #           "NAME": 该六星名称,
     #           "ISNEW": 该六星是否首次获得,
-    #           "COUNT": 该六星出货时的保底抽数
+    #           "COUNT": 该六星出货时的抽数
     #       },
     #       ...
     #   ]
@@ -379,7 +501,7 @@ class arknights_cards():
                 'COUNT': history[4]
             }
             res.append(item)
-        print('六星历史记录: {}'.format(res))
+        # print('六星历史记录: {}'.format(res))
         return res
 
     ################################
@@ -397,5 +519,5 @@ class arknights_cards():
         numbers['global'] = self.ak_db.get_cards_rarity_six_count_avg(self.uid)
         for pool in pools:
             numbers[pool] = self.ak_db.get_cards_rarity_six_count_avg(self.uid, pool)
-        print('各卡池平均出货数据: {}'.format(numbers))
+        # print('各卡池平均出货数据: {}'.format(numbers))
         return numbers
