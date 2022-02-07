@@ -288,7 +288,7 @@ for account_config in accounts_config:
 
 ### arknights_cards.py
 
-arknights_cards.py 中的 arknights_cards 类提供了所有可使用的功能，arknights_database 类 arknights_cards 类提供了数据库操作，arknights_api 类则负责对官网 api 的请求。
+arknights_cards.py 中的 arknights_cards 类提供了所有可使用的功能，arknights_database 类为 arknights_cards 类提供了数据库操作，arknights_api 类则负责对官网 api 的请求。
 
 arknights_cards:
 
