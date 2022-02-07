@@ -20,7 +20,7 @@
 
 该 token 仅能查询官网能查到的相关数据。
 
-![image-20220206222024946](https://gitee.com/fateicr/image-bed/raw/master/Image/202202062220152.png)
+![image-20220206222024946](https://gitee.com/RWoxiN/image-bed/raw/master/Image/202202062220152.png)
 
 ## 配置文件
 
