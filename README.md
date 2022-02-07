@@ -1,6 +1,8 @@
 # Arknights_Cards_Analysis
  明日方舟寻访记录拉取，从官网拉取保存在本地，并汇总分析后推送到手机。
 
+https://github.com/RWoxiN/Arknights_Cards_Analysis
+
 # 使用
 
 1. 自行配置 python3 环境，并使用 pip 安装 requests 包。
