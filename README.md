@@ -13,7 +13,7 @@
 
 ## token 获取
 
-进入官网个人中心，即 https://ak.hypergryph.com/user/home。
+进入官网个人中心，即 https://ak.hypergryph.com/user/home
 
 按 F12 打开控制台，进入 Network 一栏，刷新该页面。在请求中找到 token_by_cookie 一项，找到其 Response 中的 token，记录下来。
 
