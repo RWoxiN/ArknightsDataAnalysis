@@ -9,10 +9,11 @@ import copy
 class arknights_config():
 
     config = {
+        "version": "v1.0",
         "database": {
             "type": "sqlite3",
             "sqlite3": {
-                "filename": "arknights_cards.db"
+                "filename": "ak_server.db"
             } 
         },
         "accounts": [

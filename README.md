@@ -5,9 +5,10 @@
 
 1. 自行配置 python3 环境，并使用 pip 安装 requests 包。
 2. 在需要放置脚本的目录 `git clone https://github.com/RWoxiN/Arknights_Cards_Analysis.git`，如果是腾讯云之类墙了 github 的话，可使用 `git clone https://hub.fastgit.xyz/RWoxiN/Arknights_Cards_Analysis.git `。
-3. 修改 config.json 配置文件。详见下文。
-4. 此时使用 `python pull_to_db.py` 即可拉取寻访记录到数据库。使用 `python push_to_bark.py` 即可分析数据并进行推送。
-5. 通过 crontab 定时执行。
+3. 运行 `python pull_to_db.py` 生成 config.json。如本地已有 config.json 可忽略此步骤，如本地 config.json 版本落后于仓库版本，则需删除后重新生成。当前 config.json 版本为 v1.0。
+4. 修改 config.json 配置文件。详见下文。
+5. 此时使用 `python pull_to_db.py` 即可拉取寻访记录到数据库。使用 `python push_to_bark.py` 即可分析数据并进行推送。
+6. 通过 crontab 定时执行。
 
 
 
@@ -256,35 +257,6 @@ params:
 该文件会先从官网同步一次数据后再将 arknights_cards 中处理过的数据格式化输出推送出来。因笔者个人习惯，此处使用了 Bark 推送，如需 ServerChan 等其他推送，可自行二次开发。
 
 ## 自定义脚本
-
-### test.py
-
-该文件中展示了所有可使用的功能及其输出。
-
-```python
-from arknights_cards import *
-
-ak_config = arknights_config()
-
-database_type, type_config = ak_config.load_config_database()
-if database_type == 'sqlite3':
-    sqlite_filename = type_config.get('filename')
-
-accounts_config = ak_config.load_config_accounts()
-
-for account_config in accounts_config:
-    token = account_config.get('token')
-
-    ak_cards = arknights_cards(token, sqlite_filename)
-    ak_cards.show() # 显示当前用户数据
-    ak_cards.update_cards_db() # 将获取到的寻访记录增量更新到数据库中
-
-    ak_cards.get_cards_number() # 获取抽卡详细数据，即总计抽数，以及每个星级的抽数
-    ak_cards.get_cards_number_pool() # 获取各卡池抽卡次数
-    ak_cards.get_cards_pool_guarantee_count() # 获取各卡池保底状况，即已累计多少抽未出六星
-    ak_cards.get_cards_six_history() # 获取抽到的六星历史记录
-    ak_cards.get_cards_count_avg() # 获取各卡池平均出货抽数
-```
 
 ### arknights_cards.py
 

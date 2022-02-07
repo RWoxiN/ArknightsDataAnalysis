@@ -113,5 +113,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# self data
-self.*
+# test data
+ak_server.db
+config.json
