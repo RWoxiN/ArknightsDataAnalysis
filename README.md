@@ -3,7 +3,13 @@
 
 # 使用
 
-自行配置 python 环境，并使用 pip 安装 requests 包。
+1. 自行配置 python3 环境，并使用 pip 安装 requests 包。
+2. 在需要放置脚本的目录 `git clone https://github.com/RWoxiN/Arknights_Cards_Analysis.git`，如果是腾讯云之类墙了 github 的话，可使用 `git clone https://hub.fastgit.xyz/RWoxiN/Arknights_Cards_Analysis.git `。
+3. 修改 config.json 配置文件。详见下文。
+4. 此时使用 `python pull_to_db.py` 即可拉取寻访记录到数据库。使用 `python push_to_bark.py` 即可分析数据并进行推送。
+5. 通过 crontab 定时执行。
+
+
 
 ## token 获取
 
@@ -237,19 +243,17 @@ params:
 
 ## 预设脚本
 
-将 arknights_cards.py, pull_to_db.py, push_to_bark.py 放入同一目录下。而后通过定时任务每隔一段时间（半个小时或其他）运行 pull_to_db.py 拉取数据到本地数据库，并通过定时任务每天一次运行 push_to_bark.py 推送当日寻访数据到手机。
-
 ### pull_to_db.py
 
-运行前请自行修改该文件中的 tokens 列表，填入 token。如果多账号即按照 python 列表规则在 tokens 中追加。
+运行前请自行修改配置文件。
 
 运行该 py 文件后会从官网拉取寻访记录数据并存入数据库。适合于在服务器中使用定时任务每隔一段时间运行一次，自行同步数据到服务器，防止官网数据超过一个月自动清理。
 
 ### push_to_bark.py
 
-运行前同样需要修改 tokens 列表填入 token。
+运行前请自行修改配置文件。
 
-该文件将 arknights_cards 中处理过的数据格式化输出推送出来。因笔者个人习惯，此处使用了 Bark 推送，如需 ServerChan 等其他推送，可自行二次开发。
+该文件会先从官网同步一次数据后再将 arknights_cards 中处理过的数据格式化输出推送出来。因笔者个人习惯，此处使用了 Bark 推送，如需 ServerChan 等其他推送，可自行二次开发。
 
 ## 自定义脚本
 
@@ -260,9 +264,18 @@ params:
 ```python
 from arknights_cards import *
 
-tokens = ['tokne1', 'token2'] # TODO Token
-for token in tokens:
-    ak_cards = arknights_cards(token, 'ak_server.db') # TODO 数据库名称需要统一
+ak_config = arknights_config()
+
+database_type, type_config = ak_config.load_config_database()
+if database_type == 'sqlite3':
+    sqlite_filename = type_config.get('filename')
+
+accounts_config = ak_config.load_config_accounts()
+
+for account_config in accounts_config:
+    token = account_config.get('token')
+
+    ak_cards = arknights_cards(token, sqlite_filename)
     ak_cards.show() # 显示当前用户数据
     ak_cards.update_cards_db() # 将获取到的寻访记录增量更新到数据库中
 
