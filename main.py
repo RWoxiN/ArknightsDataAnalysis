@@ -8,6 +8,7 @@ ak_push = arknights_push()
 check_version_res = ak_config.check_version()
 if not check_version_res is None:
     ak_push.push(check_version_res)
+    exit(1)
 
 push_when_changed_enabled = ak_config.load_config_push_when_changed()
 
