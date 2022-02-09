@@ -116,3 +116,4 @@ dmypy.json
 # test data
 ak_server.db
 config.json
+start.sh
