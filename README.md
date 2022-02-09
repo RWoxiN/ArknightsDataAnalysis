@@ -20,11 +20,21 @@ https://github.com/RWoxiN/Arknights_Cards_Analysis
 
 1. git clone 后进入目录，并运行 `python -m venv venv` 在本地创建虚拟环境。
 
-2. 给 Shell 脚本添加权限。`chmod u+x start.sh`
+2. 创建 start.sh 脚本。
 
-3. 修改 Shell 脚本内目录路径，执行 `sh start.sh` 测试运行。
+    ```bash
+    #!/bin/bash
 
-4. 设置定时任务 `crontab -e`：
+    varpath="/home/rian/arknights/Arknights_Cards_Analysis"
+    source ${varpath}/venv/bin/activate
+    python ${varpath}/main.py
+    ```
+
+3. 给 Shell 脚本添加权限。`chmod u+x start.sh`
+
+4. 执行 `sh start.sh` 测试运行。
+
+5. 设置定时任务 `crontab -e`：
 
     ```
     */5 * * * * /home/rian/arknights/Arknights_Cards_Analysis/start.sh >> /home/rian/arknights/Arknights_Cards_Analysis/start.log 2>&1
