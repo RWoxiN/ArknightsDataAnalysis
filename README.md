@@ -24,15 +24,17 @@ https://github.com/RWoxiN/Arknights_Cards_Analysis
 
     ```bash
     #!/bin/bash
-
+    vardate=$(date +%c)
     varpath="/home/rian/arknights/Arknights_Cards_Analysis"
-    source ${varpath}/venv/bin/activate
-    python ${varpath}/main.py
+    cd ${varpath}
+    source ./venv/bin/activate
+    python ./main.py
+    echo "${vardate}: runing succeed!" >> ./start.log 2>&1
     ```
 
 3. 给 Shell 脚本添加权限。`chmod u+x start.sh`
 
-4. 执行 `sh start.sh` 测试运行。
+4. 执行 `sh start.sh` 测试运行，并配置配置文件。
 
 5. 设置定时任务 `crontab -e`：
 
