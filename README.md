@@ -54,7 +54,7 @@ https://github.com/RWoxiN/Arknights_Cards_Analysis
 
 ## 配置文件
 
-首次运行 pull_to_db.py 时会在本地目录自动生成 config.json。需手动修改配置文件后方可正常运行程序。
+首次运行时会在本地目录自动生成 config.json。需手动修改配置文件后方可正常运行程序。
 
 ### 当前版本
 
