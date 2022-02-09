@@ -6,7 +6,7 @@ https://github.com/RWoxiN/Arknights_Cards_Analysis
 
 # 使用
 
-1. 在需要放置脚本的目录 `git clone https://github.com/RWoxiN/Arknights_Cards_Analysis.git`，如果是腾讯云之类墙了 github 的话，可使用 gitee 库 `git clone https://gitee.com/RWoxiN/Arknights_Cards_Analysis.git `。
+1. 在需要放置脚本的目录 `git clone https://github.com/RWoxiN/Arknights_Cards_Analysis.git`，无法连接 github 的话，可使用 gitee 库 `git clone https://gitee.com/RWoxiN/Arknights_Cards_Analysis.git `。
 
 2. 自行配置 python3 环境，并使用 pip 安装依赖库 `pip install -r requirments.txt`。
 
