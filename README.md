@@ -22,7 +22,11 @@ https://github.com/RWoxiN/Arknights_Cards_Analysis
 
 2. 执行 `sh start.sh` 测试运行。
 
-3. 设置定时任务 `crontab -e`：`0 0/5 * * * ? ./start.sh`
+3. 设置定时任务 `crontab -e`：
+
+    ```
+    */5 * * * * /home/rian/arknights/Arknights_Cards_Analysis/start.sh >> /home/rian/arknights/Arknights_Cards_Analysis/start.log 2>&1
+    ```
 
 ## token 获取
 
