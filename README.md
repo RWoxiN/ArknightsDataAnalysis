@@ -22,7 +22,7 @@ https://github.com/RWoxiN/Arknights_Cards_Analysis
 
 2. 给 Shell 脚本添加权限。`chmod u+x start.sh`
 
-3. 执行 `sh start.sh` 测试运行。
+3. 修改 Shell 脚本内目录路径，执行 `sh start.sh` 测试运行。
 
 4. 设置定时任务 `crontab -e`：
 

@@ -1,5 +1,5 @@
 #!/bin/bash
 
-vardate=$(date +%c)
-source ./venv/bin/activate
-python main.py
+varpath="/home/rian/arknights/Arknights_Cards_Analysis"
+source ${varpath}/venv/bin/activate
+python ${varpath}/main.py
