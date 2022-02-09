@@ -16,7 +16,13 @@ https://github.com/RWoxiN/Arknights_Cards_Analysis
 
 5. 通过 crontab 定时执行。
 
-   
+## 通过 shell 脚本定时执行
+
+1. git clone 后进入目录，并运行 `python -m venv venv` 在本地创建虚拟环境。
+
+2. 执行 `sh start.sh` 测试运行。
+
+3. 设置定时任务 `crontab -e`：`0 0/5 * * * ? ./start.sh`
 
 ## token 获取
 
