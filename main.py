@@ -24,11 +24,9 @@ for account_config in accounts_config:
             account_config['push_timestamp'] = -1
         if db_timestamp > account_config['push_timestamp']:
             push_body = ak_push.parse_body(ak_api)
-            print(push_body)
             ak_push.push(push_body)
             account_config['push_timestamp'] = db_timestamp
     else:
         push_body = ak_push.parse_body(ak_api)
-        print(push_body)
         ak_push.push(push_body)
 ak_config.update_config_accounts(accounts_config)

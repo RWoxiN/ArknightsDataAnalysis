@@ -23,10 +23,14 @@ class arknights_push():
             user_info_str = self.push_body_config.get('user_info').get('format').format(uid, nickName)
             if not out_str == '':
                 out_str += '\n\n'
+                if self.push_type == 'serverchan':
+                    out_str += '\n'
             s_title = self.push_body_config.get('user_info').get('format_main')
             if not s_title == '':
                 out_str += s_title
                 out_str += '\n'
+                if self.push_type == 'serverchan':
+                    out_str += '\n'
             out_str += user_info_str
 
         if self.push_body_config.get('cards_record').get('enabled') == 1:
@@ -34,10 +38,14 @@ class arknights_push():
             cards_numbers_str = self.push_body_config.get('cards_record').get('format').format(cards_numbers['all'], cards_numbers['6'], cards_numbers['5'], cards_numbers['4'], cards_numbers['3'])
             if not out_str == '':
                 out_str += '\n\n'
+                if self.push_type == 'serverchan':
+                    out_str += '\n'
             s_title = self.push_body_config.get('cards_record').get('format_main')
             if not s_title == '':
                 out_str += s_title
                 out_str += '\n'
+                if self.push_type == 'serverchan':
+                    out_str += '\n'
             out_str += cards_numbers_str
 
         if self.push_body_config.get('cards_record_pool').get('enabled') == 1:
@@ -46,14 +54,20 @@ class arknights_push():
             for pool in pool_records:
                 if not pool_records_str == '':
                     pool_records_str += '\n'
+                    if self.push_type == 'serverchan':
+                        pool_records_str += '\n'
                 pool_records_str += self.push_body_config.get('cards_record_pool').get('format').format(pool, pool_records[pool]['all'], pool_records[pool]['6'], pool_records[pool]['5'], pool_records[pool]['4'], pool_records[pool]['3'])
 
             if not out_str == '':
                 out_str += '\n\n'
+                if self.push_type == 'serverchan':
+                    out_str += '\n'
             s_title = self.push_body_config.get('cards_record_pool').get('format_main')
             if not s_title == '':
                 out_str += s_title
                 out_str += '\n'
+                if self.push_type == 'serverchan':
+                    out_str += '\n'
             out_str += pool_records_str
 
         if self.push_body_config.get('cards_pool_guarantee').get('enabled') == 1:
@@ -62,14 +76,20 @@ class arknights_push():
             for pool in pool_records_guarantee:
                 if not pool_records_guarantee_str == '':
                     pool_records_guarantee_str += '\n'
+                    if self.push_type == 'serverchan':
+                        pool_records_guarantee_str += '\n'
                 pool_records_guarantee_str += self.push_body_config.get('cards_pool_guarantee').get('format').format(pool, pool_records_guarantee[pool]['count'], pool_records_guarantee[pool]['probability_next'])
 
             if not out_str == '':
                 out_str += '\n\n'
+                if self.push_type == 'serverchan':
+                    out_str += '\n'
             s_title = self.push_body_config.get('cards_pool_guarantee').get('format_main')
             if not s_title == '':
                 out_str += s_title
                 out_str += '\n'
+                if self.push_type == 'serverchan':
+                    out_str += '\n'
             out_str += pool_records_guarantee_str
 
         if self.push_body_config.get('cards_count_avg').get('enabled') == 1:
@@ -78,6 +98,8 @@ class arknights_push():
             for pool in count_avg:
                 if not count_avg_str == '':
                     count_avg_str += '\n'
+                    if self.push_type == 'serverchan':
+                        count_avg_str += '\n'
                 pool_name = pool
                 if pool == 'global':
                     pool_name = '全局'
@@ -85,10 +107,14 @@ class arknights_push():
 
             if not out_str == '':
                 out_str += '\n\n'
+                if self.push_type == 'serverchan':
+                    out_str += '\n'
             s_title = self.push_body_config.get('cards_count_avg').get('format_main')
             if not s_title == '':
                 out_str += s_title
                 out_str += '\n'
+                if self.push_type == 'serverchan':
+                    out_str += '\n'
             out_str += count_avg_str
 
         if self.push_body_config.get('cards_record_six').get('enabled') == 1:
@@ -97,6 +123,8 @@ class arknights_push():
             for record_six_item in record_six:
                 if not record_six_str == '':
                     record_six_str += '\n'
+                    if self.push_type == 'serverchan':
+                        record_six_str += '\n'
                 time_local = time.localtime(record_six_item['TIME'])
                 datatime = time.strftime(self.push_body_config.get('cards_record_six').get('format_datatime'), time_local)
                 name = record_six_item['NAME']
@@ -106,10 +134,14 @@ class arknights_push():
 
             if not out_str == '':
                 out_str += '\n\n'
+                if self.push_type == 'serverchan':
+                    out_str += '\n'
             s_title = self.push_body_config.get('cards_record_six').get('format_main')
             if not s_title == '':
                 out_str += s_title
                 out_str += '\n'
+                if self.push_type == 'serverchan':
+                    out_str += '\n'
             out_str += record_six_str
         
         return out_str
@@ -129,8 +161,24 @@ class arknights_push():
             return r.content
         return 'ERROR'
 
+    def push_by_serverchan(self, body):
+        serverchan_url = 'https://sctapi.ftqq.com/{}.send'.format(self.push_type_config.get('send_key'))
+        data = {
+            'title': self.push_type_config.get('title'),
+            'desp': body
+        }
+        r = requests.post(serverchan_url, data=data)
+        response = json.loads(r.content)
+        if r.status_code == 200:
+            return r.content
+        print('ERROR: ServerChan Refused! Response: {}'.format(response))
+        return 'ERROR'
+
     def push(self, body):
-        if self.push_type == None:
+        push_type_list =['bark', 'serverchan']
+        if not self.push_type in push_type_list:
             print(body)
         if self.push_type == 'bark':
             self.push_by_bark(body)
+        if self.push_type == 'serverchan':
+            self.push_by_serverchan(body)

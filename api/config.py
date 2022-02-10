@@ -37,6 +37,10 @@ class arknights_config():
                 "badge": 1,
                 "isArchive": 1 
             },
+            "serverchan": {
+                "send_key": "",
+                "title": "Arnights 寻访记录"
+            },
             "body": {
                 "user_info": {
                     "enabled": 1,

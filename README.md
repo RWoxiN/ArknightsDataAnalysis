@@ -143,6 +143,10 @@ https://github.com/RWoxiN/Arknights_Cards_Analysis
         "badge": 1,
         "isArchive": 1
     },
+    "serverchan": {
+        "send_key": "",
+        "title": "Arnights 寻访记录"
+    },
     "body": {}
 }
 ```
@@ -152,9 +156,10 @@ https://github.com/RWoxiN/Arknights_Cards_Analysis
 | enabled | 推送状态，0 为不启用推送，1 为启用推送。 |
 | type    | 推送类型。                               |
 
-| type | 描述             |
-| ---- | ---------------- |
-| bark | iOS 端推送 APP。 |
+| type       | 描述                                    |
+| ---------- | --------------------------------------- |
+| bark       | iOS 端推送 APP。                        |
+| serverchan | Server酱推送，SendKey 需要是 SCT 开头。 |
 
 #### push_when_changed
 
@@ -182,6 +187,15 @@ iOS 端用户可直接在 app store 下载安装 Bark。
 | isArchive  | 自动保存通知消息。                                           |      |
 
 以上参数均可在 Bark 客户端查看详细说明。
+
+#### serverchan
+
+Server 酱: https://sct.ftqq.com
+
+| 参数     | 描述                                        | 必填 |
+| -------- | ------------------------------------------- | ---- |
+| send_key | SendKey，请前往 Server 酱官网自行注册获取。 | True |
+| title    | 推送标题。                                  |      |
 
 #### body
 
