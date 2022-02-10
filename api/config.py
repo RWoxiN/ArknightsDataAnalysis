@@ -2,14 +2,20 @@
 import os, json
 
 class arknights_config():
-    version = "v1.0.1"
+    version = "v1.0.2"
     config = {
         "version": "{}".format(version),
         "database": {
             "type": "sqlite3",
             "sqlite3": {
                 "filename": "ak_server.db"
-            } 
+            },
+            "mysql": {
+                "host": "",
+                "user": "",
+                "password": "",
+                "database": ""
+            }
         },
         "accounts": [
             {

@@ -65,25 +65,43 @@ https://github.com/RWoxiN/Arknights_Cards_Analysis
 ### 数据库配置
 
 
-目前仅支持 sqlite3。
+目前支持 sqlite3、mysql。
 
 ```json
 "database": {
     "type": "sqlite3",
     "sqlite3": {
         "filename": "ak_server.db"
+    },
+    "mysql": {
+        "host": "",
+        "user": "",
+        "password": "",
+        "database": ""
     }
 }
 ```
 | type    | 描述          |
 | ------- | ------------- |
 | sqlite3 | SQLite 数据库 |
+| mysql   | MySQL 数据库  |
 
 #### sqlite3
 
 | 参数     | 描述                  |
 | -------- | --------------------- |
 | filename | SQLite 数据库默认路径 |
+
+#### mysql
+
+使用 mysql 前请自行创建一个数据库，并将其名称填入 database 参数中，数据表会在库中自动创建。
+
+| 参数     | 描述                                         | 必填 |
+| -------- | -------------------------------------------- | ---- |
+| host     | 数据库主机地址，本地数据库地址为 localhost。 | True |
+| user     | 数据库用户名                                 | True |
+| password | 数据库密码                                   | True |
+| database | 数据库库名                                   | True |
 
 ### 账号配置
 
