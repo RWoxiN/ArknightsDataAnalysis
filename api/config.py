@@ -97,14 +97,22 @@ class arknights_config():
             print('初始化 {} 完成，请前往完成相关配置！'.format(self.config_file))
             exit(1)
         else:
+            self.check_version()
             self.load_config()
 
+    def update_config_version(self, local_config):
+        if local_config.get('version') == 'v1.0.1':
+            local_config['database']['mysql'] = self.config['database']['mysql']
+            local_config['push']['serverchan'] = self.config['push']['serverchan']
+            local_config['version'] = 'v1.0.2'
+        self.config = local_config
+        self.update_config()
+
     def check_version(self):
-        self.load_config()
-        if not self.config.get('version') == self.version:
-            warning_str = 'WARNING: \n配置文件版本较旧，程序运行可能出现问题，请尽快更新！\n\n当前版本：{}，最新版本：{}'.format(self.config.get('version'), self.version)
-            return warning_str
-        return None
+        with open(self.config_file, encoding='utf-8') as json_file:
+            local_config = json.load(json_file)
+        if not local_config.get('version') == self.version:
+            self.update_config_version(local_config)
 
     def load_config(self):
         with open(self.config_file, encoding='utf-8') as json_file:

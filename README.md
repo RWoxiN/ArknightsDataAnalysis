@@ -4,6 +4,12 @@
 
 https://github.com/RWoxiN/Arknights_Cards_Analysis
 
+更新日志：
+
+v1.0.2: 添加 mysql 数据库和 ServerChan 推送的支持。增加了配置文件动态适配新版本的功能。
+
+v1.0.1: 完成基础功能，支持 sqlite3 数据库以及 bark 推送。
+
 # 使用
 
 1. 在需要放置脚本的目录 `git clone https://github.com/RWoxiN/Arknights_Cards_Analysis.git`，无法连接 github 的话，可使用 gitee 库 `git clone https://gitee.com/RWoxiN/Arknights_Cards_Analysis.git `。
