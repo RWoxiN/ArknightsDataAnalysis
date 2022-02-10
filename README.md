@@ -12,15 +12,17 @@ v1.0.1: 完成基础功能，支持 sqlite3 数据库以及 bark 推送。
 
 # 使用
 
+## 安装
+
+### 手动安装
+
 1. 在需要放置脚本的目录 `git clone https://github.com/RWoxiN/Arknights_Cards_Analysis.git`，无法连接 github 的话，可使用 gitee 库 `git clone https://gitee.com/RWoxiN/Arknights_Cards_Analysis.git `。
-
 2. 自行配置 python3 环境，并使用 pip 安装依赖库 `pip install -r requirments.txt`。
-
 3. 运行 `python main.py`。初次使用会生成 config.json 然后结束程序运行，待完成配置文件修改后再次运行即可正常使用。配置文件版本较旧时会根据配置进行推送警告，为了程序正常运行，请尽快修改配置文件。
-
 4. 在配置文件完成修改后运行 `python main.py` 即可拉取寻访记录到数据库并根据配置进行推送。
-
 5. 通过 crontab 定时执行。
+
+更新：在文件目录下 `git pull` 即可获取最新版到本地。
 
 ## 通过 shell 脚本定时执行
 
