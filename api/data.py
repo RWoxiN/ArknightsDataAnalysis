@@ -19,6 +19,7 @@ class ada_data():
     
     url_user_info = 'https://as.hypergryph.com/u8/user/info/v1/basic'
     url_cards_record = 'http://ak.hypergryph.com/user/api/inquiry/gacha'
+    url_pay_record = 'https://as.hypergryph.com/u8/pay/v1/recent'
     not_standard_pool = ['浊酒澄心']
 
     def __init__(self, token):
@@ -28,6 +29,7 @@ class ada_data():
         self.fetch_account_info()
         self.fetch_osr()
         # self.fetch_osr_from_local()
+        self.fetch_pay_record()
 
     def fetch_account_info(self):
         payload = '''
@@ -41,7 +43,7 @@ class ada_data():
         '''.format(self.token)
         source_from_server = self.request_http.post(self.url_user_info, payload)
         if source_from_server == 'ERROR':
-            print('ERROR: ada_data::get_account_info, token: {}'.format(self.token))
+            print('ERROR: ada_data::fetch_account_info, token: {}'.format(self.token))
             exit(1)
         user_info_source = json.loads(source_from_server).get('data')
         uid = user_info_source.get('uid')
@@ -114,6 +116,39 @@ class ada_data():
                 is_new = bool(chars_item[2])
                 osr_operator = OSROperator.create(name=name, rarity=rarity, is_new=is_new, index=t_index, record=osr)
                 t_index += 1
+
+    def fetch_pay_record(self):
+        payload = '''
+        {{
+            "appId":1,
+            "channelMasterId":1,
+            "channelToken":{{
+                "token":"{}"
+            }}
+        }}    
+        '''.format(self.token)
+        source_from_server = self.request_http.post(self.url_pay_record, payload)
+        if source_from_server == 'ERROR':
+            print('ERROR: ada_data::fetch_pay_record, token: {}'.format(self.token))
+            exit(1)
+        pay_record_source = json.loads(source_from_server).get('data')
+        for pay_record_item in pay_record_source:
+            amount = pay_record_item['amount']
+            pay_time = datetime.datetime.fromtimestamp(int(pay_record_item['payTime']))
+            name = pay_record_item['productName']
+            platform = pay_record_item['platform']
+            order_id = pay_record_item['orderId']
+            # print(pay_time, name, amount, platform, order_id)
+            PayRecord.get_or_create(
+                order_id=order_id, 
+                defaults={
+                    'name': name, 
+                    'pay_time': pay_time, 
+                    'account': self.account, 
+                    'platform': platform, 
+                    'amount': amount
+                }
+            )
 
     def get_osr_info(self):
         osr_number = {
@@ -191,3 +226,18 @@ class ada_data():
         # print(osr_info)
         return osr_info
         
+    def get_pay_record(self):
+        pr_info = []
+        total_money = 0
+        pay_records = self.account.pay_records.order_by(PayRecord.pay_time.desc())
+        for pay_record in pay_records:
+            t_r = {
+                'time': str(pay_record.pay_time),
+                'name': pay_record.name,
+                'amount': pay_record.amount / 100,
+                'platform': 'IOS' if int(pay_record.platform) == 0 else 'Android'
+            }
+            pr_info.append(t_r)
+            total_money += pay_record.amount / 100
+        # print(pr_info)
+        return total_money, pr_info

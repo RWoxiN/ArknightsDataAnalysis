@@ -126,7 +126,25 @@ class ada_push():
         out_str += add_n(2)
         out_str += parse_block(title, info_str)
 
-        print(out_str)
+        if int(body['pay_info']['total_money']) == 0:
+            title = '充值记录（共 ￥0）'
+            info_str = '无'
+        else:
+            title = '充值记录（共 ￥{0}）：'.format(body['pay_info']['total_money'])
+            info_str = ''
+            for item in body['pay_info']['pay_info']:
+                if info_str != '':
+                    info_str += add_n()
+                info_str += '{0} ￥{1} {2} ({3})'.format(
+                    item['time'],
+                    item['amount'],
+                    item['name'],
+                    item['platform']
+                )
+        out_str += add_n(2)
+        out_str += parse_block(title, info_str)
+
+        # print(out_str)
         return out_str
 
     def push_by_bark(self, body):

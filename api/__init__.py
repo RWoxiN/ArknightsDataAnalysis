@@ -50,6 +50,21 @@ class ada_api():
     def get_osr_info(self):
         osr_info = self.a_data.get_osr_info()
         return osr_info
+
+    ################################
+    # 获取充值记录
+    # return:
+    #   'total_money': "重置总记录"
+    #   'pr_info': [{
+    #       'time': "时间"
+    #       'name': "名称",
+    #       'amount': "金额",
+    #       'platform': "平台"
+    #   },...]
+    ################################
+    def get_pay_record(self):
+        total_money, pr_info = self.a_data.get_pay_record()
+        return total_money, pr_info
     
     ################################
     # 发送推送
@@ -57,6 +72,7 @@ class ada_api():
     def push(self, push_time=None):
         osr_info = self.get_osr_info()
         acc_info = self.get_account_info()
+        total_money, pay_info = self.get_pay_record()
         end_time = self.account.records.order_by(OperatorSearchRecord.time.desc()).limit(1)[0].time
         end_ts = time.mktime(end_time.timetuple())
         if push_time is not None:
@@ -65,7 +81,11 @@ class ada_api():
 
         info = {
             'acc_info': acc_info,
-            'osr_info': osr_info
+            'osr_info': osr_info,
+            'pay_info': {
+                'total_money': total_money, 
+                'pay_info': pay_info
+            }
         }
         push_body = self.a_push.parse_body(info)
         self.a_push.push(push_body)

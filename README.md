@@ -6,6 +6,8 @@ https://github.com/RWoxiN/ArknightsDataAnalysis
 
 更新日志：
 
+v2.0.1 加入充值记录功能。
+
 v2.0.0 内容重构，使用 ORM 框架 peewee 对数据进行存储操作，并取消了推送自定义内容功能。
 
 v1.0.2: 添加 mysql 数据库和 ServerChan 推送的支持。增加了配置文件动态适配新版本的功能。

@@ -2,7 +2,7 @@
 import os, json
 
 class ada_config():
-    version = 'v2.0.0'
+    version = 'v2.0.1'
     config = {
         "version": "{}".format(version),
         "database": {
@@ -55,10 +55,8 @@ class ada_config():
             self.load_config()
 
     def update_config_version(self, local_config):
-        # if local_config.get('version') == 'v1.0.0':
-        #     local_config['database']['mysql'] = self.config['database']['mysql']
-        #     local_config['push']['serverchan'] = self.config['push']['serverchan']
-        #     local_config['version'] = 'v1.0.1'
+        if local_config.get('version') == 'v2.0.0':
+            local_config['version'] = 'v2.0.1'
         self.config = local_config
         self.update_config()
 
