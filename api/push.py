@@ -1,149 +1,132 @@
 # -*- coding: utf-8 -*-
-
-import time, requests
+from unicodedata import name
 from .config import *
+import time, requests
 
-class arknights_push():
+class ada_push():
+    def __init__(self):
+        a_config = ada_config()
+        self.push_type, self.push_type_config = a_config.load_config_push()
 
-    def __init__(self, config_file=None):
-        if config_file is None:
-            ak_config = arknights_config()
-        else:
-            ak_config = arknights_config(config_file)
-        self.push_type, self.push_type_config = ak_config.load_config_push()
-        self.push_body_config = ak_config.load_config_push_body()
-
-    def parse_body(self, ak_api):
-        out_str = ''
-
-        if self.push_body_config.get('user_info').get('enabled') == 1:
-            user_info_dict = ak_api.get_user_info() # 显示当前用户数据
-            uid = user_info_dict['uid']
-            nickName = user_info_dict['nickName']
-            user_info_str = self.push_body_config.get('user_info').get('format').format(uid, nickName)
-            if not out_str == '':
-                out_str += '\n\n'
+    def parse_body(self, body):
+        def parse_block(title, info):
+            o_str = ''
+            if not title == '':
+                o_str += title
+                o_str += '\n'
                 if self.push_type == 'serverchan':
-                    out_str += '\n'
-            s_title = self.push_body_config.get('user_info').get('format_main')
-            if not s_title == '':
-                out_str += s_title
-                out_str += '\n'
-                if self.push_type == 'serverchan':
-                    out_str += '\n'
-            out_str += user_info_str
+                    o_str += '\n'
+            o_str += info
+            return o_str
 
-        if self.push_body_config.get('cards_record').get('enabled') == 1:
-            cards_numbers = ak_api.get_cards_number() # 获取抽卡详细数据，即总计抽数，以及每个星级的抽数
-            cards_numbers_str = self.push_body_config.get('cards_record').get('format').format(cards_numbers['all'], cards_numbers['6'], cards_numbers['5'], cards_numbers['4'], cards_numbers['3'])
-            if not out_str == '':
-                out_str += '\n\n'
-                if self.push_type == 'serverchan':
-                    out_str += '\n'
-            s_title = self.push_body_config.get('cards_record').get('format_main')
-            if not s_title == '':
-                out_str += s_title
-                out_str += '\n'
-                if self.push_type == 'serverchan':
-                    out_str += '\n'
-            out_str += cards_numbers_str
-
-        if self.push_body_config.get('cards_record_pool').get('enabled') == 1:
-            pool_records = ak_api.get_cards_number_pool()
-            pool_records_str = ''
-            for pool in pool_records:
-                if not pool_records_str == '':
-                    pool_records_str += '\n'
-                    if self.push_type == 'serverchan':
-                        pool_records_str += '\n'
-                pool_records_str += self.push_body_config.get('cards_record_pool').get('format').format(pool, pool_records[pool]['all'], pool_records[pool]['6'], pool_records[pool]['5'], pool_records[pool]['4'], pool_records[pool]['3'])
-
-            if not out_str == '':
-                out_str += '\n\n'
-                if self.push_type == 'serverchan':
-                    out_str += '\n'
-            s_title = self.push_body_config.get('cards_record_pool').get('format_main')
-            if not s_title == '':
-                out_str += s_title
-                out_str += '\n'
-                if self.push_type == 'serverchan':
-                    out_str += '\n'
-            out_str += pool_records_str
-
-        if self.push_body_config.get('cards_pool_guarantee').get('enabled') == 1:
-            pool_records_guarantee = ak_api.get_cards_pool_guarantee_count()
-            pool_records_guarantee_str = ''
-            for pool in pool_records_guarantee:
-                if not pool_records_guarantee_str == '':
-                    pool_records_guarantee_str += '\n'
-                    if self.push_type == 'serverchan':
-                        pool_records_guarantee_str += '\n'
-                pool_records_guarantee_str += self.push_body_config.get('cards_pool_guarantee').get('format').format(pool, pool_records_guarantee[pool]['count'], pool_records_guarantee[pool]['probability_next'])
-
-            if not out_str == '':
-                out_str += '\n\n'
-                if self.push_type == 'serverchan':
-                    out_str += '\n'
-            s_title = self.push_body_config.get('cards_pool_guarantee').get('format_main')
-            if not s_title == '':
-                out_str += s_title
-                out_str += '\n'
-                if self.push_type == 'serverchan':
-                    out_str += '\n'
-            out_str += pool_records_guarantee_str
-
-        if self.push_body_config.get('cards_count_avg').get('enabled') == 1:
-            count_avg = ak_api.get_cards_count_avg()
-            count_avg_str = ''
-            for pool in count_avg:
-                if not count_avg_str == '':
-                    count_avg_str += '\n'
-                    if self.push_type == 'serverchan':
-                        count_avg_str += '\n'
-                pool_name = pool
-                if pool == 'global':
-                    pool_name = '全局'
-                count_avg_str += self.push_body_config.get('cards_count_avg').get('format').format(pool_name, count_avg[pool])
-
-            if not out_str == '':
-                out_str += '\n\n'
-                if self.push_type == 'serverchan':
-                    out_str += '\n'
-            s_title = self.push_body_config.get('cards_count_avg').get('format_main')
-            if not s_title == '':
-                out_str += s_title
-                out_str += '\n'
-                if self.push_type == 'serverchan':
-                    out_str += '\n'
-            out_str += count_avg_str
-
-        if self.push_body_config.get('cards_record_six').get('enabled') == 1:
-            record_six = ak_api.get_cards_six_history()
-            record_six_str = ''
-            for record_six_item in record_six:
-                if not record_six_str == '':
-                    record_six_str += '\n'
-                    if self.push_type == 'serverchan':
-                        record_six_str += '\n'
-                time_local = time.localtime(record_six_item['TIME'])
-                datatime = time.strftime(self.push_body_config.get('cards_record_six').get('format_datatime'), time_local)
-                name = record_six_item['NAME']
-                if record_six_item['ISNEW'] == True:
-                    name += '(NEW)'
-                record_six_str += self.push_body_config.get('cards_record_six').get('format').format(datatime, record_six_item['POOL'], name, record_six_item['COUNT'])
-
-            if not out_str == '':
-                out_str += '\n\n'
-                if self.push_type == 'serverchan':
-                    out_str += '\n'
-            s_title = self.push_body_config.get('cards_record_six').get('format_main')
-            if not s_title == '':
-                out_str += s_title
-                out_str += '\n'
-                if self.push_type == 'serverchan':
-                    out_str += '\n'
-            out_str += record_six_str
+        def add_n(num=1):
+            o_str = ''
+            for i in range(1, num+1):
+                o_str += '\n'
+            if self.push_type == 'serverchan':
+                o_str += '\n'
+            return o_str
         
+        out_str = ''
+        
+        title = '当前用户：'
+        info_str = 'UID: {0}, NickName: {1}.'.format(
+            body['acc_info']['uid'],
+            body['acc_info']['nickName']
+        )
+        out_str += parse_block(title, info_str)
+
+
+        title = '统计时间：'
+        info_str = '{0} - {1}'.format(
+            body['osr_info']['time']['start_time'],
+            body['osr_info']['time']['end_time']
+        )
+        out_str += add_n(2)
+        out_str += parse_block(title, info_str)
+
+
+        title = '抽卡详细数据：'
+        info_str = '总计 {0} 抽。'.format(
+            body['osr_info']['osr_number']['total']['all']
+        )
+        for i in range(6, 2, -1):
+            info_str += add_n()
+            info_str += '{0} 星：{1} 抽，占 {2} %。'.format(
+                i,
+                body['osr_info']['osr_number']['total'][str(i)],
+                round(body['osr_info']['osr_number']['total'][str(i)] / body['osr_info']['osr_number']['total']['all'] * 100, 2)
+            )
+        out_str += add_n(2)
+        out_str += parse_block(title, info_str)
+
+
+        title = '平均出货次数：'
+        info_str = '六星 {0} 抽，五星 {1} 抽。'.format(
+            round(body['osr_info']['osr_lucky_avg']['6'], 2),
+            round(body['osr_info']['osr_lucky_avg']['5'], 2)
+        )
+        out_str += add_n(2)
+        out_str += parse_block(title, info_str)
+
+
+        title = '各卡池抽卡次数：'
+        info_str = ''
+        for item in body['osr_info']['osr_number']:
+            if info_str != '':
+                info_str += add_n()
+            if item == 'total':
+                continue
+            info_str += '{0}: {1} 抽。'.format(
+                item,
+                body['osr_info']['osr_number'][item]
+            )
+        out_str += add_n(2)
+        out_str += parse_block(title, info_str)
+
+
+        title = '各卡池保底情况：'
+        info_str = ''
+        for item in body['osr_info']['osr_lucky_count']:
+            if info_str != '':
+                info_str += add_n()
+            info_str += '{0}: 已累计 {1} 抽未出 6 星。'.format(
+                item,
+                body['osr_info']['osr_lucky_count'][item]['6']
+            )
+        out_str += add_n(2)
+        out_str += parse_block(title, info_str)
+
+
+        title = '每月抽卡次数：'
+        info_str = ''
+        for item in body['osr_info']['osr_number_month']:
+            if info_str != '':
+                info_str += add_n()
+            info_str += '{0}:  {1} 抽。'.format(
+                item,
+                body['osr_info']['osr_number_month'][item]
+            )
+        out_str += add_n(2)
+        out_str += parse_block(title, info_str)
+
+
+        title = '六星历史记录：'
+        info_str = ''
+        for item in body['osr_info']['osr_six_record']:
+            if info_str != '':
+                info_str += add_n()
+            info_str += '{0} [{1}] {2}{3} ({4})'.format(
+                item['time'],
+                item['count'],
+                item['name'],
+                '(NEW)' if item['is_new'] else '',
+                item['pool']
+            )
+        out_str += add_n(2)
+        out_str += parse_block(title, info_str)
+
+        print(out_str)
         return out_str
 
     def push_by_bark(self, body):
@@ -160,7 +143,7 @@ class arknights_push():
         if r.status_code == 200:
             return r.content
         return 'ERROR'
-
+    
     def push_by_serverchan(self, body):
         serverchan_url = 'https://sctapi.ftqq.com/{}.send'.format(self.push_type_config.get('send_key'))
         data = {
