@@ -100,7 +100,7 @@ class ada_push():
 
         title = '每月抽卡次数：'
         info_str = ''
-        for item in body['osr_info']['osr_number_month']:
+        for item in sorted(body['osr_info']['osr_number_month'].keys(), reverse=True):
             if info_str != '':
                 info_str += add_n()
             info_str += '{0}:  {1} 抽。'.format(
