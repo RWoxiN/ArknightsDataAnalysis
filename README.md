@@ -142,8 +142,8 @@ v1.0.1: 完成基础功能，支持 sqlite3 数据库以及 bark 推送。
         "enabled": 1
     },
     "bark": {
-        "url": "https://bark.rianng.cn/push",
-        "device_key": "7uCfQUL363kCTQt2nibf2C",
+        "url": "",
+        "device_key": "",
         "title": "Arnights 寻访记录",
         "group": "Arknights",
         "badge": 1,
