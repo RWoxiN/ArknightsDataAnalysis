@@ -1,11 +1,11 @@
-from flask import Flask, redirect
+from flask import Flask, redirect, request
 from flask import render_template
 
 from api import *
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
     a_config = ada_config()
     accounts_config = a_config.load_config_accounts()
@@ -14,7 +14,23 @@ def index():
         a_api = ada_api(acc_config['token'], only_read=True)
         acc_info = a_api.get_account_info()
         accs_info.append(acc_info)
-    return render_template('index.html', accounts=accs_info)
+    if request.method == 'GET':
+        return render_template('index.html', accounts=accs_info)
+    else:
+        token = request.form.get('token')
+        a_api = ada_api(token, only_read=True)
+        if a_api.account is not None:
+            acc_info = a_api.get_account_info()
+            return render_template('index.html', accounts=accs_info, new_acc_info=acc_info)
+        else:
+            return render_template('index.html', accounts=accs_info, new_acc_info={'None': token})
+
+@app.route('/api/acc/add/<token>')
+def add_acc(token):
+    a_config = ada_config()
+    a_config.add_config_account(token)
+    a_api = ada_api(token)
+    return redirect('/analyze/{}'.format(token))
 
 @app.route('/analyze/<token>/refresh')
 def refresh_ada(token):

@@ -82,6 +82,11 @@ class ada_config():
         accounts_config = self.config.get('accounts')
         return accounts_config
 
+    def add_config_account(self, token):
+        self.load_config()
+        self.config['accounts'].append({'token': token})
+        self.update_config()
+
     def load_config_database(self):
         self.load_config()
         database_config = self.config.get('database')

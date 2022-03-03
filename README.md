@@ -6,7 +6,7 @@ https://github.com/RWoxiN/ArknightsDataAnalysis
 
 更新日志：
 
-v2.1.0 加入 web 端。
+v2.1.0 加入 web 端，完成新增账号功能。
 
 v2.0.1 加入充值记录功能。
 
@@ -55,6 +55,18 @@ v1.0.1: 完成基础功能，支持 sqlite3 数据库以及 bark 推送。
     ```
     */5 * * * * /home/rian/arknights/ArknightsDataAnalysis/start.sh >> /home/rian/arknights/ArknightsDataAnalysis/start.log 2>&1
     ```
+
+## web 端使用
+
+web 端尚未开发完全，目前仍需要定时运行 `main.py` 来保证数据的定时爬取录入数据库。
+
+web 端尚未加入账密登录功能，如有信息安全方便的担忧，建议暂不使用 web 端，等待后续开发完全。
+
+1. 进入 python 虚拟环境，运行 `python app.py`。
+
+2. 默认端口为 8900，可自行修改 `app.py` 来改变端口。
+
+3. 通过 nginx 将端口反代到域名，或直接使用 `yourip:8900` 测试访问。
 
 ## token 获取
 

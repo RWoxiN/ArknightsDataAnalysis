@@ -1,135 +1,223 @@
-<!doctype html>
-<html lang="zh-cn">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+{% extends "base.html" %}
 
-    <title>Arknights Data Analysis</title>
-  </head>
-  <body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js" integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3">UID: {{ info.acc_info.uid }}</a>
-      <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3">Arknights Data Analysis</a>
-      <div class="navbar-nav">
-        <div class="nav-item text-nowrap">
-          <a class="nav-link px-3" href="https://github.com/RWoxiN/ArknightsDataAnalysis">Author: Rian Ng</a>
-        </div>
-      </div>
-    </header>
-    <div class="container-fluid">
-      <div class="row">
-        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-          <div class="position-sticky pt-3">
-            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mb-1">
-              <span>Arknights Accounts</span>
-              <a class="link-secondary" href="/accounts/new">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-              </a>
-            </h6>
-
-            <ul class="nav flex-column mb-2">
-              {% for acc in accounts %}
-                <li class="nav-item">
-                  <a class="nav-link" href="/analyze/{{ acc.token }}">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text" aria-hidden="true"><image xlink:href="https://gitee.com/RWoxiN/image-bed/raw/master/Image/202203031635528.jpeg" width="20" height="20"/></svg>
-                    {% if acc.uid is equalto info.acc_info.uid %}
-                      <font color='red'>{{ acc.nickName }}</font>
-                    {% else %}
-                      <font color='black'>{{ acc.nickName }}</font>
-                    {% endif %}
-                  </a>
-                </li>
-              {% endfor %}
-            </ul>
-          </div>
-        </nav>
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-          <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
-          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2">{{ info.acc_info.nickName }}</h1>
-            <div class="btn-toolbar mb-2 mb-md-0">
-              <div class="btn-group me-2">
-                <a href="{{ info.acc_info.token }}/refresh">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Refresh</button>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <h3>抽卡数据</h2>
-          <div class="table-responsive">
-            <table class="table table-striped table-sm">
-              <thead>
-                <tr>
-                  <th scope="col">总计</th>
-                  <th scope="col">{{ info.osr_info.osr_number.total.all }} 抽</th>
-                  <th scope="col">占比</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>六星</td>
-                  <td>{{ info.osr_info.osr_number.total['6'] }} 抽</td>
-                  <td>{{ "%.2f" | format(info.osr_info.osr_number.total['6'] / info.osr_info.osr_number.total.all * 100) }} %</td>
-                </tr>
-                <tr>
-                  <td>五星</td>
-                  <td>{{ info.osr_info.osr_number.total['5'] }} 抽</td>
-                  <td>{{ "%.2f" | format(info.osr_info.osr_number.total['5'] / info.osr_info.osr_number.total.all * 100) }} %</td>
-                </tr>
-                <tr>
-                  <td>四星</td>
-                  <td>{{ info.osr_info.osr_number.total['4'] }} 抽</td>
-                  <td>{{ "%.2f" | format(info.osr_info.osr_number.total['4'] / info.osr_info.osr_number.total.all * 100) }} %</td>
-                </tr>
-                <tr>
-                  <td>三星</td>
-                  <td>{{ info.osr_info.osr_number.total['3'] }} 抽</td>
-                  <td>{{ "%.2f" | format(info.osr_info.osr_number.total['3'] / info.osr_info.osr_number.total.all * 100) }} %</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div>
-            {% if info %}
-              <p>{{ info }}</p>
-            {% else %}
-              <p>No info</p>
-            {% endif %}
-          </div>
-        </main>
+{% block uid %}
+  UID: {{ info.acc_info.uid }}
+{% endblock %}
+{% block accounts %}
+  <ul class="nav flex-column mb-2">
+    {% for acc in accounts %}
+      <li class="nav-item">
+        <a class="nav-link" href="/analyze/{{ acc.token }}">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text" aria-hidden="true"><image xlink:href="https://gitee.com/RWoxiN/image-bed/raw/master/Image/202203031635528.jpeg" width="20" height="20"/></svg>
+          {% if acc.uid is equalto info.acc_info.uid %}
+            <font color='red'>{{ acc.nickName }}</font>
+          {% else %}
+            <font color='black'>{{ acc.nickName }}</font>
+          {% endif %}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+{% block main %}
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">{{ info.acc_info.nickName }}</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="btn-group me-2">
+        <a href="{{ info.acc_info.token }}/refresh">
+          <button type="button" class="btn btn-sm btn-outline-secondary">Refresh</button>
+        </a>
       </div>
     </div>
+  </div>
 
-    <!--
-    <script>
-      var ctx = document.getElementById('pie').getContext('2d');
-      var myPieChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-          datasets: [{
-            data: [
-              {{ info.osr_info.osr_number.total['3'] }},
-              {{ info.osr_info.osr_number.total['4'] }},
-              {{ info.osr_info.osr_number.total['5'] }},
-              {{ info.osr_info.osr_number.total['6'] }}
-            ],
-            backgroundColor: ['grey', 'blue', 'yellow', 'red']
-          }],
-          labels: ["三星干员", "四星干员", "五星干员", "六星干员"]
-        }
-      });
-    </script>
-    -->
+  <h2>抽卡数据</h2>
+  <a>{{ info.osr_info.time.start_time }} - {{ info.osr_info.time.end_time }}</a>
+  <div class="table-responsive">
+    <table class="table table-striped table-sm" style="border-collapse: collapse; table-layout: fixed;">
+      <thead>
+        <tr>
+          <th scope="col">总计</th>
+          <th scope="col">{{ info.osr_info.osr_number.total.all }} 抽</th>
+          <th scope="col">占比</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>六星</td>
+          <td>{{ info.osr_info.osr_number.total['6'] }} 抽</td>
+          <td>{{ "%.2f" | format(info.osr_info.osr_number.total['6'] / info.osr_info.osr_number.total.all * 100) }} %</td>
+        </tr>
+        <tr>
+          <td>五星</td>
+          <td>{{ info.osr_info.osr_number.total['5'] }} 抽</td>
+          <td>{{ "%.2f" | format(info.osr_info.osr_number.total['5'] / info.osr_info.osr_number.total.all * 100) }} %</td>
+        </tr>
+        <tr>
+          <td>四星</td>
+          <td>{{ info.osr_info.osr_number.total['4'] }} 抽</td>
+          <td>{{ "%.2f" | format(info.osr_info.osr_number.total['4'] / info.osr_info.osr_number.total.all * 100) }} %</td>
+        </tr>
+        <tr>
+          <td>三星</td>
+          <td>{{ info.osr_info.osr_number.total['3'] }} 抽</td>
+          <td>{{ "%.2f" | format(info.osr_info.osr_number.total['3'] / info.osr_info.osr_number.total.all * 100) }} %</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
+  <h3>平均出货次数</h3>
+  <div class="table-responsive">
+    <table class="table table-striped table-sm" style="border-collapse: collapse; table-layout: fixed;">
+      <thead>
+        <tr>
+          <th scope="col">干员</th>
+          <th scope="col">抽数</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>六星</td>
+          <td>{{ "%.2f" | format(info.osr_info.osr_lucky_avg['6']) }} 抽</td>
+        </tr>
+        <tr>
+          <td>五星</td>
+          <td>{{ "%.2f" | format(info.osr_info.osr_lucky_avg['5']) }} 抽</td>
+        </tr>
+        <tr>
+          <td>四星</td>
+          <td>{{ "%.2f" | format(info.osr_info.osr_lucky_avg['4']) }} 抽</td>
+        </tr>
+        <tr>
+          <td>三星</td>
+          <td>{{ "%.2f" | format(info.osr_info.osr_lucky_avg['3']) }} 抽</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-  </body>
-</html>
+  <h3>各卡池保底情况</h3>
+  <div class="table-responsive">
+    <table class="table table-striped table-sm" style="border-collapse: collapse; table-layout: fixed;">
+      <thead>
+        <tr>
+          <th scope="col">卡池</th>
+          <th scope="col">未出六星抽数</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for key, value in info.osr_info.osr_lucky_count.items() %}
+          <tr>
+            <td>{{ key }}</td>
+            <td>{{ value['6'] }} 抽</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>各卡池抽卡次数</h3>
+  <div class="table-responsive">
+    <table class="table table-striped table-sm" style="border-collapse: collapse; table-layout: fixed;">
+      <thead>
+        <tr>
+          <th scope="col">卡池</th>
+          <th scope="col">抽数</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for key, value in info.osr_info.osr_number.items() %}
+          {% if key != 'total' %}
+            <tr>
+              <td>{{ key }}</td>
+              <td>{{ value }} 抽</td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>每月抽卡次数</h3>
+  <div class="table-responsive">
+    <table class="table table-striped table-sm" style="border-collapse: collapse; table-layout: fixed;">
+      <thead>
+        <tr>
+          <th scope="col">日期</th>
+          <th scope="col">抽数</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for key, value in info.osr_info.osr_number_month.items() %}
+          {% if key != 'total' %}
+            <tr>
+              <td>{{ key }}</td>
+              <td>{{ value }} 抽</td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <h3>六星历史记录</h3>
+  <div class="table-responsive">
+    <table class="table table-striped table-sm" style="border-collapse: collapse; table-layout: fixed;">
+      <thead>
+        <tr>
+          <th scope="col">日期</th>
+          <th scope="col">卡池</th>
+          <th scope="col">抽数</th>
+          <th scope="col">干员</th>
+          <th scope="col">新增</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in info.osr_info.osr_six_record %}
+          <tr>
+            <td>{{ row.time }}</td>
+            <td>{{ row.pool }}</td>
+            <td>{{ row.count }} 抽</td>
+            <td>{{ row.name }}</td>
+            <td>
+              {% if row.is_new == true %}
+                √
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <h2>充值记录</h3>
+  <div class="table-responsive">
+    <table class="table table-striped table-sm" style="border-collapse: collapse; table-layout: fixed;">
+      <thead>
+        <tr>
+          <th scope="col">日期</th>
+          <th scope="col">名称</th>
+          <th scope="col">金额</th>
+          <th scope="col">平台</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in info.pay_info.pay_info %}
+          <tr>
+            <td>{{ row.time }}</td>
+            <td>{{ row.name }}</td>
+            <td>￥{{ row.amount }}</td>
+            <td>{{ row.platform }}</td>
+          </tr>
+        {% endfor %}
+        <tr>
+          <td>合计</td>
+          <td></td>
+          <td>￥{{ info.pay_info.total_money }}</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

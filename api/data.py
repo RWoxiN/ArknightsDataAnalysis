@@ -26,7 +26,8 @@ class ada_data():
         self.token = token
     
     def fetch_data(self):
-        self.fetch_account_info()
+        if not self.fetch_account_info():
+            exit(1)
         self.fetch_osr()
         # self.fetch_osr_from_local()
         self.fetch_pay_record()
@@ -44,7 +45,8 @@ class ada_data():
         source_from_server = self.request_http.post(self.url_user_info, payload)
         if source_from_server == 'ERROR':
             print('ERROR: ada_data::fetch_account_info, token: {}'.format(self.token))
-            exit(1)
+            self.account = None
+            return False
         user_info_source = json.loads(source_from_server).get('data')
         uid = user_info_source.get('uid')
         nickName = user_info_source.get('nickName')
@@ -53,6 +55,7 @@ class ada_data():
             account.token = self.token
             account.save()
         self.account = account
+        return True
 
     def fetch_osr(self):
         def get_osr_by_page(page):
