@@ -6,6 +6,8 @@ https://github.com/RWoxiN/ArknightsDataAnalysis
 
 更新日志：
 
+v2.1.0 加入 web 端。
+
 v2.0.1 加入充值记录功能。
 
 v2.0.0 内容重构，使用 ORM 框架 peewee 对数据进行存储操作，并取消了推送自定义内容功能。

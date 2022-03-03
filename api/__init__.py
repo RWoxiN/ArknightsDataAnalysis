@@ -10,11 +10,14 @@ class ada_api():
     # params:
     #   token: token
     ################################
-    def __init__(self, token):
+    def __init__(self, token, only_read=False):
         self.a_data = ada_data(token)
-        self.a_data.fetch_data()
+        if not only_read:
+            self.a_data.fetch_data()
+            self.a_push = ada_push()
+        else:
+            self.a_data.fetch_account_info()
         self.account = self.a_data.account
-        self.a_push = ada_push()
 
     ################################
     # 显示当前用户数据
@@ -27,7 +30,8 @@ class ada_api():
     def get_account_info(self):
         acc_info = {
             'uid': self.account.uid,
-            'nickName': self.account.nickname
+            'nickName': self.account.nickname,
+            'token': self.account.token
         }
         # print(acc_info)
         return acc_info
@@ -67,18 +71,12 @@ class ada_api():
         return total_money, pr_info
     
     ################################
-    # 发送推送
+    # 获取所有信息
     ################################
-    def push(self, push_time=None):
+    def get_all_info(self):
         osr_info = self.get_osr_info()
         acc_info = self.get_account_info()
         total_money, pay_info = self.get_pay_record()
-        end_time = self.account.records.order_by(OperatorSearchRecord.time.desc()).limit(1)[0].time
-        end_ts = time.mktime(end_time.timetuple())
-        if push_time is not None:
-            if end_ts <= push_time:
-                return end_ts
-
         info = {
             'acc_info': acc_info,
             'osr_info': osr_info,
@@ -87,6 +85,20 @@ class ada_api():
                 'pay_info': pay_info
             }
         }
+        return info
+
+    ################################
+    # 发送推送
+    ################################
+    def push(self, push_time=None):
+        end_time = self.account.records.order_by(OperatorSearchRecord.time.desc()).limit(1)[0].time
+        end_ts = time.mktime(end_time.timetuple())
+        if push_time is not None:
+            if end_ts <= push_time:
+                return end_ts
+
+        info = self.get_all_info()
+
         push_body = self.a_push.parse_body(info)
         self.a_push.push(push_body)
         return end_ts
