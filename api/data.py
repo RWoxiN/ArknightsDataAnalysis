@@ -219,6 +219,10 @@ class ada_data():
             else:
                 osr_lucky_avg[str(r)] = sum(osr_lucky_avg[str(r)]) / len(osr_lucky_avg[str(r)])
 
+        osr_number_month_sorted = {}
+        for item in sorted(osr_number_month.keys(), reverse=True):
+            osr_number_month_sorted[item] = osr_number_month[item]
+
         osr_info = {
             'time': {
                 'start_time': str(self.account.records.order_by(OperatorSearchRecord.time).limit(1)[0].time),
@@ -228,7 +232,7 @@ class ada_data():
             'osr_lucky_avg': osr_lucky_avg,
             'osr_lucky_count': osr_lucky_count,
             'osr_six_record': osr_six_record,
-            'osr_number_month': osr_number_month
+            'osr_number_month': osr_number_month_sorted
         }
         # print(osr_info)
         return osr_info
