@@ -29,8 +29,10 @@ def index():
 def add_acc():
     token = request.form.get('token')
     a_config = ada_config()
-    a_config.add_config_account(token)
     a_api = ada_api(token)
+    acc_info = a_api.get_account_info()
+    a_config.add_config_account(acc_info['nickName'], token)
+    
     return redirect('/')
 
 @app.route('/analyze/refresh', methods=['POST'])
