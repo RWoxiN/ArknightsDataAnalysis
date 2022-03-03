@@ -113,6 +113,9 @@ class ada_config():
     def load_config_push_when_changed(self):
         self.load_config()
         push_config = self.config.get('push')
+        push_enabled = self.config.get('push').get('enabled')
+        if push_enabled == 0:
+            return 0
         push_when_changed_config = push_config.get('push_when_changed')
         push_when_changed_enabled = push_when_changed_config.get('enabled')
         return push_when_changed_enabled
