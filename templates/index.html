@@ -11,7 +11,7 @@
     </form>
     {% if new_acc_info %}
       {% if not new_acc_info.None %}
-        <form class="form-inline" role="form" id="addform" action="/api/acc/add" method="post">
+        <form class="form-inline" style="display: none" role="form" id="addform" action="/api/acc/add" method="post">
           <div class="form-group">
             <input type="text" class="form-control" id="token" name="token" placeholder="请输入 token" value={{ new_acc_info.token }}>
           </div>
