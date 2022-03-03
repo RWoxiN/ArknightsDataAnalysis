@@ -7,14 +7,19 @@
   <ul class="nav flex-column mb-2">
     {% for acc in accounts %}
       <li class="nav-item">
-        <a class="nav-link" href="/analyze/{{ acc.token }}">
+        <form class="form-inline" style="display: none" role="form" id="accform{{ acc.token }}" action="/analyze" method="post">
+          <div class="form-group">
+              <input type="text" class="form-control" id="token" name="token" value={{ acc.token }}>
+          </div>
+        </form>
+        <button type="submit" form="accform{{ acc.token }}" class="nav-link btn btn-sm btn-outline-secondary" style="border:none">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text" aria-hidden="true"><image xlink:href="https://gitee.com/RWoxiN/image-bed/raw/master/Image/202203031635528.jpeg" width="20" height="20"/></svg>
           {% if acc.uid is equalto info.acc_info.uid %}
             <font color='red'>{{ acc.nickName }}</font>
           {% else %}
             <font color='black'>{{ acc.nickName }}</font>
           {% endif %}
-        </a>
+        </button>
       </li>
     {% endfor %}
   </ul>
@@ -24,9 +29,12 @@
     <h1 class="h2">{{ info.acc_info.nickName }}</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
       <div class="btn-group me-2">
-        <a href="{{ info.acc_info.token }}/refresh">
-          <button type="button" class="btn btn-sm btn-outline-secondary">Refresh</button>
-        </a>
+        <form class="form-inline" style="display: none" role="form" id="refform" action="/analyze/refresh" method="post">
+          <div class="form-group">
+              <input type="text" class="form-control" id="token" name="token" value={{ info.acc_info.token }}>
+          </div>
+        </form>
+        <button type="submit" form="refform" class="btn btn-sm btn-outline-secondary">Refresh</button>
       </div>
     </div>
   </div>

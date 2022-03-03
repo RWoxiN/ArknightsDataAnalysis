@@ -84,6 +84,9 @@ class ada_config():
 
     def add_config_account(self, token):
         self.load_config()
+        for account in self.config.get('accounts'):
+            if account.get('token') == token:
+                return
         self.config['accounts'].append({'token': token})
         self.update_config()
 

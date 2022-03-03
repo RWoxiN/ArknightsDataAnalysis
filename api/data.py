@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from operator import is_
 import requests, json, datetime
+from urllib.parse import quote
 from .model import *
 
 class ada_data():
@@ -59,7 +60,7 @@ class ada_data():
 
     def fetch_osr(self):
         def get_osr_by_page(page):
-            url_cards_record_page = '{}?page={}&token={}'.format(self.url_cards_record, page, self.token)
+            url_cards_record_page = '{}?page={}&token={}'.format(self.url_cards_record, page, quote(self.token, safe=""))
             source_from_server = self.request_http.get(url_cards_record_page)
             if source_from_server == 'ERROR':
                 print('ERROR: ada_data::get_osr::get_osr_by_page, page: {}, token: {}'.format(page, self.token))
@@ -213,7 +214,10 @@ class ada_data():
                 osr_lucky_avg[str(r)].extend(osr_lucky[osr_lucky_pool][str(r)])
             osr_lucky_count[osr_lucky_pool] = osr_lucky[osr_lucky_pool]['count']
         for r in range(3, 7):
-            osr_lucky_avg[str(r)] = sum(osr_lucky_avg[str(r)]) / len(osr_lucky_avg[str(r)])
+            if len(osr_lucky_avg[str(r)]) == 0:
+                osr_lucky_avg[str(r)] = 0
+            else:
+                osr_lucky_avg[str(r)] = sum(osr_lucky_avg[str(r)]) / len(osr_lucky_avg[str(r)])
 
         osr_info = {
             'time': {

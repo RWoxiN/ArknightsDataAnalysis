@@ -3,23 +3,30 @@
 {% block main %}
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">新增用户</h1>
+
     <form class="form-inline" role="form" id="tokenform" action="/" method="post">
       <div class="form-group">
         <input type="text" class="form-control" id="token" name="token" placeholder="请输入 token">
       </div>
     </form>
+    {% if new_acc_info %}
+      {% if not new_acc_info.None %}
+        <form class="form-inline" role="form" id="addform" action="/api/acc/add" method="post">
+          <div class="form-group">
+            <input type="text" class="form-control" id="token" name="token" placeholder="请输入 token" value={{ new_acc_info.token }}>
+          </div>
+        </form>
+      {% endif %}
+    {% endif %}
+
     <div class="btn-toolbar mb-2 mb-md-0">
       <div class="btn-group me-2" style="margin: 0 8px;">
-        <a href="">
-          <button type="submit" form="tokenform" class="btn btn-sm btn-outline-secondary">Refresh</button>
-        </a>
+        <button type="submit" form="tokenform" class="btn btn-sm btn-outline-secondary">Refresh</button>
       </div>
       {% if new_acc_info %}
         {% if not new_acc_info.None %}
           <div class="btn-group me-2" style="margin: 0 8px;">
-            <a href="/api/acc/add/{{ new_acc_info.token }}">
-              <button type="button" class="btn btn-sm btn-outline-secondary">Add</button>
-            </a>
+            <button type="submit" form="addform" class="btn btn-sm btn-outline-secondary">Add</button>
           </div>
         {% endif %}
       {% endif %}
