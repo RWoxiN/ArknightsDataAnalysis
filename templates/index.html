@@ -48,5 +48,11 @@
     {% else %}
       <p>token {{ new_acc_info.None }} 无效</p>
     {% endif %}
+  {% else %}
+    <h2>token 获取方式</h2>
+    <p>进入官网个人中心，即 https://ak.hypergryph.com/user/home</p>
+    <p>按 F12 打开控制台，进入 Network 一栏，刷新该页面。在请求中找到 token_by_cookie 一项，找到其 Response 中的 token，记录下来。</p>
+    <p>该 token 仅能查询官网能查到的相关数据。</p>
+    <img src="https://gitee.com/RWoxiN/image-bed/raw/master/Image/202202062220152.png">
   {% endif %}
 {% endblock %}
