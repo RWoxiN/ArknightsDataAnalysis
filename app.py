@@ -31,7 +31,7 @@ def add_acc():
     a_config = ada_config()
     a_config.add_config_account(token)
     a_api = ada_api(token)
-    return redirect('/analyze/{}'.format(token))
+    return redirect('/')
 
 @app.route('/analyze/refresh', methods=['POST'])
 def refresh_ada():
