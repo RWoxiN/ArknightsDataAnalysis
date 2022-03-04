@@ -2,12 +2,12 @@
 
 {% block main %}
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Login</h1>
+    <h1 class="h2">Register</h1>
 
     <div class="btn-toolbar mb-2 mb-md-0">
       <div class="btn-group me-2" style="margin: 0 8px;">
-        <a href="{{ url_for("register") }}">
-            <button type="text" class="btn btn-sm btn-outline-secondary">Register</button>
+        <a href="{{ url_for("login") }}">
+            <button type="text" class="btn btn-sm btn-outline-secondary">Login</button>
         </a>
       </div>
     </div>
@@ -16,24 +16,25 @@
   {% macro render_field(field) %} <!-- 定义字段宏 -->
     <dt>{{ field.label }}:
     <dd>{{ field(**kwargs)|safe }}
-      {% if field.errors %}
+        {% if field.errors %}
         <ul class=errors>
-          {% for error in field.errors %}
+            {% for error in field.errors %}
             <li>{{ error }}</li>
-          {% endfor %}
+            {% endfor %}
         </ul>
-      {% endif %}
+        {% endif %}
     </dd>
-  {% endmacro %}
-  
-  <form method="POST">
+    {% endmacro %}
+
+    <form method="POST">
     {{ form.csrf_token }}
     {{ render_field(form.username) }}
-    {{ render_field(form.password) }}
+    {{ render_field(form.password1) }}
+    {{ render_field(form.password2) }}
     {% if emsg %}  <!-- 如果有错误信息 则显示 -->
         <h3> {{ emsg }}</h3>
     {% endif %}
-    <input type="submit" value="Login">
-  </form>
-
+    <input type="submit" value="Register">
+    </form>
+  
 {% endblock %}

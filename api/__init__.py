@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-from tkinter import N
 from .config import *
 from .data import *
 from .push import *
+from .user import *
+from .model import DBUser
 
 class ada_api():
     ################################

@@ -9,14 +9,28 @@ class BaseModel(Model):
         database = database_proxy
 
 class DBUser(BaseModel):
+    authenticated = BooleanField(default=False)
     username = CharField(max_length=20, unique=True)
     password = CharField(max_length=30)
+
+
+    def is_authenticated(self):
+        return self.authenticated
+    
+    def is_active(self):
+        return True
+    
+    def get_id(self):
+        return self.id
+    
+    def is_anonymous(self):
+        return False
 
 class Account(BaseModel):
     uid = CharField(max_length=20, unique=True)
     nickname = CharField(max_length=50)
     token = CharField(max_length=50)
-    owner = ForeignKeyField(DBUser, backref='ark_accs')
+    owner = ForeignKeyField(DBUser, backref='ark_accs', null=True)
 
 class OSRPool(BaseModel):
     name = CharField(max_length=20, unique=True)
@@ -55,3 +69,4 @@ if database_type == 'mysql':
     db = MySQLDatabase(db_name, host=db_host, user=db_user, passwd=db_pass, port=3306)
 database_proxy.initialize(db)
 database_proxy.create_tables([DBUser, Account, OSRPool, OperatorSearchRecord, OSROperator, PayRecord])
+

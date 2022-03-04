@@ -2,7 +2,7 @@
 import os, json
 
 class ada_config():
-    version = 'v2.1.1'
+    version = 'v2.2.0'
     config = {
         "version": "{}".format(version),
         "force_refresh": {
@@ -68,6 +68,9 @@ class ada_config():
             }
             local_config['force_refresh'] = force_refresh
             local_config['version'] = 'v2.1.1'
+        if local_config.get('version') == 'v2.1.1':
+            del local_config['accounts']
+            local_config['version'] = 'v2.2.0'
         self.config = local_config
         self.update_config()
 
@@ -85,19 +88,6 @@ class ada_config():
     def update_config(self):
         with open(self.config_file, 'w', encoding='utf-8') as json_file:
             json.dump(self.config, json_file, indent=4, ensure_ascii=False)
-
-    def load_config_accounts(self):
-        self.load_config()
-        accounts_config = self.config.get('accounts')
-        return accounts_config
-
-    def add_config_account(self, name, token):
-        self.load_config()
-        for account in self.config.get('accounts'):
-            if account.get('token') == token:
-                return
-        self.config['accounts'].append({'name': name, 'token': token})
-        self.update_config()
 
     def load_config_database(self):
         self.load_config()

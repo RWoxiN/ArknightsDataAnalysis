@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 from operator import is_
 import requests, json, datetime
-<<<<<<< HEAD
-from flask_login import UserMixin
-=======
+
 from urllib.parse import quote
->>>>>>> master
+
 from .model import *
 
 class ada_data():
