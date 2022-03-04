@@ -2,9 +2,12 @@
 import os, json
 
 class ada_config():
-    version = 'v2.1.0'
+    version = 'v2.1.1'
     config = {
         "version": "{}".format(version),
+        "force_refresh": {
+            "enabled": 0
+        },
         "database": {
             "type": "sqlite3",
             "sqlite3": {
@@ -59,6 +62,12 @@ class ada_config():
             local_config['version'] = 'v2.0.1'
         if local_config.get('version') == 'v2.0.1':
             local_config['version'] = 'v2.1.0'
+        if local_config.get('version') == 'v2.1.0':
+            force_refresh = {
+                "enabled": 0
+            }
+            local_config['force_refresh'] = force_refresh
+            local_config['version'] = 'v2.1.1'
         self.config = local_config
         self.update_config()
 
@@ -119,3 +128,10 @@ class ada_config():
         push_when_changed_config = push_config.get('push_when_changed')
         push_when_changed_enabled = push_when_changed_config.get('enabled')
         return push_when_changed_enabled
+    
+    def load_config_force_refresh(self):
+        self.load_config()
+        force_refresh_enabled = self.config.get('force_refresh').get('enabled')
+        if force_refresh_enabled == 0:
+            return False
+        return True
