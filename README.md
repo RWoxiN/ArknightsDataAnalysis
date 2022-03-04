@@ -20,6 +20,14 @@ v1.0.2: 添加 mysql 数据库和 ServerChan 推送的支持。增加了配置�
 
 v1.0.1: 完成基础功能，支持 sqlite3 数据库以及 bark 推送。
 
+# 图示
+
+![image-20220304234523725](https://gitee.com/RWoxiN/image-bed/raw/master/Image/202203042345845.png)
+
+![image-20220304234729841](https://gitee.com/RWoxiN/image-bed/raw/master/Image/202203042347956.png)
+
+![image-20220304234742023](https://gitee.com/RWoxiN/image-bed/raw/master/Image/202203042347141.png)
+
 # 使用
 
 ## 安装
