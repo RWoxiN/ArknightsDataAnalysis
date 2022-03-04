@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 
+{% block cur_user %}
+  <div style="display: inline">
+    <a class="nav-link px-3" style="display: inline-block;" href="/">{{ user.username }}</a>
+    <a class="nav-link px-3" style="display: inline-block;" href="{{ url_for('logout') }}">Logout</a>
+  </div>
+{% endblock %}
+
 {% block uid %}
   UID: {{ info.acc_info.uid }}
 {% endblock %}

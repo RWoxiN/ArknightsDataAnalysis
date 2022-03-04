@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 
+{% block cur_user %}
+  <div style="display: inline">
+    <a class="nav-link px-3" style="display: inline-block;" href="/">{{ user.username }}</a>
+    <a class="nav-link px-3" style="display: inline-block;" href="{{ url_for('logout') }}">Logout</a>
+  </div>
+{% endblock %}
+
 {% block main %}
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">新增用户</h1>

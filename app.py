@@ -1,7 +1,7 @@
 import uuid
 from flask import Flask, redirect, request, url_for
 from flask import render_template
-from flask_login import LoginManager, current_user, login_required, login_user
+from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 
 from api import *
 
@@ -55,6 +55,12 @@ def login():
                 emsg = 'Wrong username or password.'
     return render_template('login.html', form=form, emsg=emsg)
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
@@ -69,15 +75,15 @@ def index():
         acc_info = a_api.get_account_info()
         accs_info.append(acc_info)
     if request.method == 'GET':
-        return render_template('index.html', accounts=accs_info)
+        return render_template('index.html', accounts=accs_info, user=current_user)
     else:
         token = request.form.get('token')
         a_api = ada_api(token, only_read=True)
         if a_api.account is not None:
             acc_info = a_api.get_account_info()
-            return render_template('index.html', accounts=accs_info, new_acc_info=acc_info)
+            return render_template('index.html', accounts=accs_info, new_acc_info=acc_info, user=current_user)
         else:
-            return render_template('index.html', accounts=accs_info, new_acc_info={'None': token})
+            return render_template('index.html', accounts=accs_info, new_acc_info={'None': token}, user=current_user)
 
 @app.route('/api/acc/add', methods=['POST'])
 @login_required
@@ -120,7 +126,7 @@ def analyze_results():
         accs_info.append(acc_info)
     a_api = ada_api(token, only_read=True)
     a_info = a_api.get_all_info()
-    return render_template('analysis.html', info=a_info, accounts=accs_info)
+    return render_template('analysis.html', info=a_info, accounts=accs_info, user=current_user)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8900)
