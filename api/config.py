@@ -2,9 +2,12 @@
 import os, json
 
 class ada_config():
-    version = 'v2.1.0'
+    version = 'v2.1.1'
     config = {
         "version": "{}".format(version),
+        "force_refresh": {
+            "enabled": 0
+        },
         "database": {
             "type": "sqlite3",
             "sqlite3": {
@@ -59,6 +62,12 @@ class ada_config():
             local_config['version'] = 'v2.0.1'
         if local_config.get('version') == 'v2.0.1':
             local_config['version'] = 'v2.1.0'
+        if local_config.get('version') == 'v2.1.0':
+            force_refresh = {
+                "enabled": 0
+            }
+            local_config['force_refresh'] = force_refresh
+            local_config['version'] = 'v2.1.1'
         self.config = local_config
         self.update_config()
 
@@ -82,9 +91,12 @@ class ada_config():
         accounts_config = self.config.get('accounts')
         return accounts_config
 
-    def add_config_account(self, token):
+    def add_config_account(self, name, token):
         self.load_config()
-        self.config['accounts'].append({'token': token})
+        for account in self.config.get('accounts'):
+            if account.get('token') == token:
+                return
+        self.config['accounts'].append({'name': name, 'token': token})
         self.update_config()
 
     def load_config_database(self):
@@ -110,6 +122,16 @@ class ada_config():
     def load_config_push_when_changed(self):
         self.load_config()
         push_config = self.config.get('push')
+        push_enabled = self.config.get('push').get('enabled')
+        if push_enabled == 0:
+            return 0
         push_when_changed_config = push_config.get('push_when_changed')
         push_when_changed_enabled = push_when_changed_config.get('enabled')
         return push_when_changed_enabled
+    
+    def load_config_force_refresh(self):
+        self.load_config()
+        force_refresh_enabled = self.config.get('force_refresh').get('enabled')
+        if force_refresh_enabled == 0:
+            return False
+        return True

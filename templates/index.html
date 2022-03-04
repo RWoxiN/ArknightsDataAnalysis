@@ -3,23 +3,30 @@
 {% block main %}
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
     <h1 class="h2">新增用户</h1>
+
     <form class="form-inline" role="form" id="tokenform" action="/" method="post">
       <div class="form-group">
         <input type="text" class="form-control" id="token" name="token" placeholder="请输入 token">
       </div>
     </form>
+    {% if new_acc_info %}
+      {% if not new_acc_info.None %}
+        <form class="form-inline" style="display: none" role="form" id="addform" action="/api/acc/add" method="post">
+          <div class="form-group">
+            <input type="text" class="form-control" id="token" name="token" placeholder="请输入 token" value={{ new_acc_info.token }}>
+          </div>
+        </form>
+      {% endif %}
+    {% endif %}
+
     <div class="btn-toolbar mb-2 mb-md-0">
       <div class="btn-group me-2" style="margin: 0 8px;">
-        <a href="">
-          <button type="submit" form="tokenform" class="btn btn-sm btn-outline-secondary">Refresh</button>
-        </a>
+        <button type="submit" form="tokenform" class="btn btn-sm btn-outline-secondary">Refresh</button>
       </div>
       {% if new_acc_info %}
         {% if not new_acc_info.None %}
           <div class="btn-group me-2" style="margin: 0 8px;">
-            <a href="/api/acc/add/{{ new_acc_info.token }}">
-              <button type="button" class="btn btn-sm btn-outline-secondary">Add</button>
-            </a>
+            <button type="submit" form="addform" class="btn btn-sm btn-outline-secondary">Add</button>
           </div>
         {% endif %}
       {% endif %}
@@ -48,5 +55,17 @@
     {% else %}
       <p>token {{ new_acc_info.None }} 无效</p>
     {% endif %}
+  {% else %}
+    <h2>token 获取方式</h2>
+    <p>进入官网个人中心，即 https://ak.hypergryph.com/user/home</p>
+    <p>按 F12 打开控制台，进入 Network 一栏，刷新该页面。在请求中找到 token_by_cookie 一项，找到其 Response 中的 token，记录下来。</p>
+    <p>该 token 仅能查询官网能查到的相关数据。</p>
+    <img src="https://gitee.com/RWoxiN/image-bed/raw/master/Image/202202062220152.png" height="50%" width="50%">
+
+    <br><br>
+    <h2>Q&A</h2>
+    <h3>1. 卡池出现未知寻访怎么办？</h3>
+    <p>这种情况主要是因为官网那边显示的是未知寻访，待官网数据修正后点击 Force Refresh 来强制刷新数据。Refresh 是不会对已经存入数据库的数据进行更改的，所以必须使用 Force Refresh 来强制刷新。</p>
+    
   {% endif %}
 {% endblock %}

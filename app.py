@@ -33,20 +33,31 @@ def index():
         else:
             return render_template('index.html', accounts=accs_info, new_acc_info={'None': token})
 
-@app.route('/api/acc/add/<token>')
-def add_acc(token):
+@app.route('/api/acc/add', methods=['POST'])
+def add_acc():
+    token = request.form.get('token')
     a_config = ada_config()
-    a_config.add_config_account(token)
     a_api = ada_api(token)
-    return redirect('/analyze/{}'.format(token))
+    acc_info = a_api.get_account_info()
+    a_config.add_config_account(acc_info['nickName'], token)
+    
+    return redirect('/')
 
-@app.route('/analyze/<token>/refresh')
-def refresh_ada(token):
+@app.route('/analyze/refresh', methods=['POST'])
+def refresh_ada():
+    token = request.form.get('token')
     a_api = ada_api(token)
-    return redirect('/analyze/{}'.format(token))
+    return redirect('/')
 
-@app.route('/analyze/<token>')
-def analyze_results(token):
+@app.route('/analyze/refresh/force', methods=['POST'])
+def refresh_force_ada():
+    token = request.form.get('token')
+    a_api = ada_api(token, force_refresh=True)
+    return redirect('/')
+
+@app.route('/analyze', methods=['POST'])
+def analyze_results():
+    token = request.form.get('token')
     a_config = ada_config()
     accounts_config = a_config.load_config_accounts()
     accs_info = []

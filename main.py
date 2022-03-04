@@ -5,12 +5,13 @@ from api import *
 a_config = ada_config()
 
 push_when_changed_enabled = a_config.load_config_push_when_changed()
+force_refresh_enabled = a_config.load_config_force_refresh()
 
 accounts_config = a_config.load_config_accounts()
 
 for account_config in accounts_config:
     token = account_config.get('token')
-    a_api = ada_api(token)
+    a_api = ada_api(token, force_refresh=force_refresh_enabled)
 
     if push_when_changed_enabled == 1:
         if 'push_time' not in account_config:

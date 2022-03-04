@@ -15,7 +15,7 @@
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3">Arknights Data Analysis</a>
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="/">Arknights Data Analysis</a>
     <div class="navbar-nav">
         <div class="nav-item text-nowrap">
         <a class="nav-link px-3" href="https://github.com/RWoxiN/ArknightsDataAnalysis">Author: Rian Ng</a>
@@ -36,10 +36,15 @@
             <ul class="nav flex-column mb-2">
               {% for acc in accounts %}
                 <li class="nav-item">
-                  <a class="nav-link" href="/analyze/{{ acc.token }}">
+                  <form class="form-inline" style="display: none" role="form" id="accform{{ acc.token }}" action="/analyze" method="post">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="token" name="token" value={{ acc.token }}>
+                    </div>
+                  </form>
+                  <button type="submit" form="accform{{ acc.token }}" class="nav-link btn btn-sm btn-outline-secondary" style="border:none">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text" aria-hidden="true"><image xlink:href="https://gitee.com/RWoxiN/image-bed/raw/master/Image/202203031635528.jpeg" width="20" height="20"/></svg>
                     <font color='black'>{{ acc.nickName }}</font>
-                  </a>
+                  </button>
                 </li>
               {% endfor %}
             </ul>

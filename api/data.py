@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 from operator import is_
 import requests, json, datetime
+<<<<<<< HEAD
 from flask_login import UserMixin
+=======
+from urllib.parse import quote
+>>>>>>> master
 from .model import *
 
 class ada_data():
@@ -26,10 +30,10 @@ class ada_data():
     def __init__(self, token):
         self.token = token
     
-    def fetch_data(self):
+    def fetch_data(self, force_refresh=False):
         if not self.fetch_account_info():
             exit(1)
-        self.fetch_osr()
+        self.fetch_osr(force_refresh)
         # self.fetch_osr_from_local()
         self.fetch_pay_record()
 
@@ -58,9 +62,9 @@ class ada_data():
         self.account = account
         return True
 
-    def fetch_osr(self):
+    def fetch_osr(self, flag_all=False):
         def get_osr_by_page(page):
-            url_cards_record_page = '{}?page={}&token={}'.format(self.url_cards_record, page, self.token)
+            url_cards_record_page = '{}?page={}&token={}'.format(self.url_cards_record, page, quote(self.token, safe=""))
             source_from_server = self.request_http.get(url_cards_record_page)
             if source_from_server == 'ERROR':
                 print('ERROR: ada_data::get_osr::get_osr_by_page, page: {}, token: {}'.format(page, self.token))
@@ -70,9 +74,10 @@ class ada_data():
             return cards_record_page_data_list
 
         last_time = None
-        if self.account.records.count() != 0:
+        if self.account.records.count() != 0 and not flag_all:
             records = self.account.records.order_by(OperatorSearchRecord.time.desc()).limit(1)[0]
             last_time = records.time
+        
         flag_outdate = False
         for page in range(1, 75):
             if flag_outdate == True:
@@ -92,14 +97,18 @@ class ada_data():
                 if last_time is not None and time <= last_time:
                     flag_outdate = True
                     break
-                osr = OperatorSearchRecord.create(account=self.account, time=time, pool=osr_pool)
-                t_index = 0
-                for chars_item in chars:
-                    name = chars_item['name']
-                    rarity = chars_item['rarity'] + 1
-                    is_new = chars_item['isNew']
-                    osr_operator = OSROperator.create(name=name, rarity=rarity, is_new=is_new, index=t_index, record=osr)
-                    t_index += 1
+                osr, f = OperatorSearchRecord.get_or_create(account=self.account, time=time, defaults={'pool': osr_pool})
+                if osr_pool != osr.pool:
+                    osr.pool = osr_pool
+                    osr.save()
+                if f:
+                    t_index = 0
+                    for chars_item in chars:
+                        name = chars_item['name']
+                        rarity = chars_item['rarity'] + 1
+                        is_new = chars_item['isNew']
+                        osr_operator = OSROperator.create(name=name, rarity=rarity, is_new=is_new, index=t_index, record=osr)
+                        t_index += 1
 
     def fetch_osr_from_local(self):
         with open('local.json', encoding='utf-8') as json_file:
@@ -214,7 +223,14 @@ class ada_data():
                 osr_lucky_avg[str(r)].extend(osr_lucky[osr_lucky_pool][str(r)])
             osr_lucky_count[osr_lucky_pool] = osr_lucky[osr_lucky_pool]['count']
         for r in range(3, 7):
-            osr_lucky_avg[str(r)] = sum(osr_lucky_avg[str(r)]) / len(osr_lucky_avg[str(r)])
+            if len(osr_lucky_avg[str(r)]) == 0:
+                osr_lucky_avg[str(r)] = 0
+            else:
+                osr_lucky_avg[str(r)] = sum(osr_lucky_avg[str(r)]) / len(osr_lucky_avg[str(r)])
+
+        osr_number_month_sorted = {}
+        for item in sorted(osr_number_month.keys(), reverse=True):
+            osr_number_month_sorted[item] = osr_number_month[item]
 
         osr_info = {
             'time': {
@@ -225,7 +241,7 @@ class ada_data():
             'osr_lucky_avg': osr_lucky_avg,
             'osr_lucky_count': osr_lucky_count,
             'osr_six_record': osr_six_record,
-            'osr_number_month': osr_number_month
+            'osr_number_month': osr_number_month_sorted
         }
         # print(osr_info)
         return osr_info
