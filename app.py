@@ -63,7 +63,6 @@ def index():
     user = User(current_user)
     accs_token = user.get_accs_token()
 
-    # accounts_config = a_config.load_config_accounts()
     accs_info = []
     for acc_token in accs_token:
         a_api = ada_api(acc_token, only_read=True)
@@ -87,7 +86,6 @@ def add_acc():
     a_config = ada_config()
     a_api = ada_api(token)
     acc_info = a_api.get_account_info()
-    a_config.add_config_account(acc_info['nickName'], token)
     user = User(current_user)
     user.add_acc(acc_info['uid'])
     return redirect('/')
@@ -114,8 +112,6 @@ def analyze_results():
 
     user = User(current_user)
     accs_token = user.get_accs_token()
-
-    # accounts_config = a_config.load_config_accounts()
 
     accs_info = []
     for acc_token in accs_token:
