@@ -8,10 +8,15 @@ class BaseModel(Model):
     class Meta:
         database = database_proxy
 
+class DBUser(BaseModel):
+    username = CharField(max_length=20, unique=True)
+    password = CharField(max_length=30)
+
 class Account(BaseModel):
     uid = CharField(max_length=20, unique=True)
     nickname = CharField(max_length=50)
     token = CharField(max_length=50)
+    owner = ForeignKeyField(DBUser, backref='ark_accs')
 
 class OSRPool(BaseModel):
     name = CharField(max_length=20, unique=True)
@@ -49,4 +54,4 @@ if database_type == 'mysql':
     db_name = database_type_config.get('database')
     db = MySQLDatabase(db_name, host=db_host, user=db_user, passwd=db_pass, port=3306)
 database_proxy.initialize(db)
-database_proxy.create_tables([Account, OSRPool, OperatorSearchRecord, OSROperator, PayRecord])
+database_proxy.create_tables([DBUser, Account, OSRPool, OperatorSearchRecord, OSROperator, PayRecord])

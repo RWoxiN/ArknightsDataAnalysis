@@ -1,9 +1,17 @@
+import uuid
 from flask import Flask, redirect, request
 from flask import render_template
+from flask_login import LoginManager
 
 from api import *
 
 app = Flask(__name__)
+
+app.secret_key = 'secret_rianng.cn_8023_{}'.format(uuid.uuid1())
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
 @app.route('/', methods=['GET', 'POST'])
 def index():

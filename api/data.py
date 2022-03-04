@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from operator import is_
 import requests, json, datetime
+from flask_login import UserMixin
 from .model import *
 
 class ada_data():
