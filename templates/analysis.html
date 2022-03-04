@@ -35,6 +35,12 @@
           </div>
         </form>
         <button type="submit" form="refform" class="btn btn-sm btn-outline-secondary">Refresh</button>
+        <form class="form-inline" style="display: none" role="form" id="forcerefform" action="/analyze/refresh/force" method="post">
+          <div class="form-group">
+              <input type="text" class="form-control" id="token" name="token" value={{ info.acc_info.token }}>
+          </div>
+        </form>
+        <button type="submit" form="forcerefform" class="btn btn-sm btn-outline-secondary">Force Refresh</button>
       </div>
     </div>
   </div>

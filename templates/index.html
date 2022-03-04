@@ -61,5 +61,11 @@
     <p>按 F12 打开控制台，进入 Network 一栏，刷新该页面。在请求中找到 token_by_cookie 一项，找到其 Response 中的 token，记录下来。</p>
     <p>该 token 仅能查询官网能查到的相关数据。</p>
     <img src="https://gitee.com/RWoxiN/image-bed/raw/master/Image/202202062220152.png" height="50%" width="50%">
+
+    <br><br>
+    <h2>Q&A</h2>
+    <h3>1. 卡池出现未知寻访怎么办？</h3>
+    <p>这种情况主要是因为官网那边显示的是未知寻访，待官网数据修正后点击 Force Refresh 来强制刷新数据。Refresh 是不会对已经存入数据库的数据进行更改的，所以必须使用 Force Refresh 来强制刷新。</p>
+    
   {% endif %}
 {% endblock %}

@@ -10,10 +10,10 @@ class ada_api():
     # params:
     #   token: token
     ################################
-    def __init__(self, token, only_read=False):
+    def __init__(self, token, only_read=False, force_refresh=False):
         self.a_data = ada_data(token)
         if not only_read:
-            self.a_data.fetch_data()
+            self.a_data.fetch_data(force_refresh)
             self.a_push = ada_push()
         else:
             self.a_data.fetch_account_info()

@@ -41,6 +41,12 @@ def refresh_ada():
     a_api = ada_api(token)
     return redirect('/')
 
+@app.route('/analyze/refresh/force', methods=['POST'])
+def refresh_force_ada():
+    token = request.form.get('token')
+    a_api = ada_api(token, force_refresh=True)
+    return redirect('/')
+
 @app.route('/analyze', methods=['POST'])
 def analyze_results():
     token = request.form.get('token')

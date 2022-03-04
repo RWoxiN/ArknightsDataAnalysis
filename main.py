@@ -10,7 +10,7 @@ accounts_config = a_config.load_config_accounts()
 
 for account_config in accounts_config:
     token = account_config.get('token')
-    a_api = ada_api(token)
+    a_api = ada_api(token, force_refresh=True)
 
     if push_when_changed_enabled == 1:
         if 'push_time' not in account_config:
